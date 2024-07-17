@@ -42,7 +42,7 @@ function AllCustomers() {
               </NavDropdown>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
                 <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
-                <Link to='/AddItems' className="dropdown-item">Add Items</Link>
+                <Link to='/CreateReminder' state= {{userData: userData}} className="dropdown-item">Schedule Reminder</Link>
               </NavDropdown>
               <Nav.Link href="/">Logout</Nav.Link>
             </Nav>

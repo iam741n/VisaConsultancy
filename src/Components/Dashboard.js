@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Nav, Navbar, Form, Button, Modal, Alert,NavDropdown } from 'react-bootstrap';
+import { Container, Row, Col, Nav, Navbar, Form, Button, Modal, Alert,NavDropdown,Dropdown } from 'react-bootstrap';
 import { useLocation,Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBell } from '@fortawesome/free-solid-svg-icons';
 import jsPDF from 'jspdf';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
@@ -35,6 +37,16 @@ const Dashboard = () => {
   const [successMessage, setSuccessMessage] = useState('');
   // State for Clear Confirmation Modal
   const [showClearConfirmation, setShowClearConfirmation] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: "John Doe reacted to your post", time: "10 mins ago" },
+    { id: 2, text: "Richard Miles reacted to your post", time: "1 day ago" },
+    { id: 3, text: "Brian Cumin reacted to your post", time: "1 day ago" },
+    { id: 4, text: "Lance Bogrol reacted to your post", time: "1 day ago" }
+]);
+
 
   useEffect(() => {
     const dueDateObj = new Date(dueDate);
@@ -183,13 +195,43 @@ const Dashboard = () => {
               <Link to='/AllCustomerByDate' className="dropdown-item">Client Record by Date</Link>
                 <Link to='/AllCustomers' className="dropdown-item">All clients</Link>
                 </NavDropdown>
+                <Nav.Link href="/ViewReminders">View Reminders</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
                 <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
-                <Link to='/AddItems' className="dropdown-item">Add Items</Link>
+                <Link to='/CreateReminder' className="dropdown-item">Create Reminder</Link>
                 
               </NavDropdown>
               <Nav.Link href="/">Logout</Nav.Link>
             </Nav>
+            <Nav className="ms-auto">
+                            <Dropdown show={showDropdown} onToggle={toggleDropdown} align="end">
+                                <Dropdown.Toggle as="a" className="nav-link text-white position-relative" onClick={toggleDropdown}>
+                                    <FontAwesomeIcon icon={faBell} />
+                                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {notifications.length}
+                                        <span className="visually-hidden">unread notifications</span>
+                                    </span>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Header>Notifications</Dropdown.Header>
+                                    {notifications.map((notification) => (
+                                        <Dropdown.Item key={notification.id}>
+                                            <div className="d-flex align-items-center">
+                                                <div className="me-3">
+                                                    <img src="https://via.placeholder.com/40" className="rounded-circle" alt="profile" />
+                                                </div>
+                                                <div>
+                                                    <strong>{notification.text}</strong>
+                                                    <div className="small text-muted">{notification.time}</div>
+                                                </div>
+                                            </div>
+                                        </Dropdown.Item>
+                                    ))}
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item className="text-center text-primary">View All</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>

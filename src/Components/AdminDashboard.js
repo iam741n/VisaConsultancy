@@ -30,14 +30,15 @@ const AdminDashboard = () => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/Dashboard">Home</Nav.Link>
+                            <Nav.Link href="/AdminDashboard">Home</Nav.Link>
                             <NavDropdown title="Client History" id="basic-nav-dropdown">
                                 <Link to='/AllCustomerByDate' className="dropdown-item">Client Record by Date</Link>
                                 <Link to='/AllCustomers' className="dropdown-item">All clients</Link>
                             </NavDropdown>
+                            <Nav.Link href="/View Reminders">View Reminders</Nav.Link>
                             <NavDropdown title="Settings" id="basic-nav-dropdown">
                                 <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
-                                <Link to='/AddItems' className="dropdown-item">Add Items</Link>
+                                <Link to='/CreateReminder' className="dropdown-item">Create Reminders</Link>
                             </NavDropdown>
                             <Nav.Link href="/">Logout</Nav.Link>
                         </Nav>

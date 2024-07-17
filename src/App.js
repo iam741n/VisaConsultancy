@@ -9,6 +9,8 @@ import AdminDashboard from './Components/AdminDashboard';
 import UpdatePasswordEmpolyee from './Components/UpdatePasswordEmpolyee';
 import AllCustomers from './Components/AllCustomers';
 import AllCustomerByDate from './Components/AllCustomerByDate';
+import CreateReminder from './Components/CreateReminder';
+import ViewReminder from './Components/ViewReminder';
 function App() {
   return (
     <Router>
@@ -20,6 +22,8 @@ function App() {
    <Route path="/UpdatePasswordEmpolyee" element={<UpdatePasswordEmpolyee />} />
    <Route path="/AllCustomers" element={<AllCustomers />} />
    <Route path="/AllCustomerByDate" element={<AllCustomerByDate />} />
+   <Route path="/CreateReminder" element={<CreateReminder />} />
+   <Route path="/ViewReminder" element={<ViewReminder />} />
    </Routes>
    </Router>
  
