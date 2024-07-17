@@ -1,0 +1,66 @@
+.login-container {
+    min-height: 100vh;
+
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-box-container {
+    max-width: 600px; /* Adjust max-width as needed */
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    background-color: white; /* Background color of the outer box */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Optional: Add box shadow */
+  }
+  
+  .login-form-container {
+    width: 100%;
+    padding: 2rem;
+  }
+  
+  .login-form {
+    max-width: 400px; /* Max width of the login form */
+    margin: 0 auto; /* Center the form horizontally */
+  }
+  
+  .login-image-container {
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust alpha (last value) for transparency */
+    color: white;
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .input-group {
+    position: relative; /* Ensure icon is positioned relative to input */
+  }
+  
+  .input-group-text {
+    cursor: pointer; /* Add pointer cursor to indicate interaction */
+  }
+  
+  .form-control {
+    height: calc(2.25rem + 2px); /* Match Bootstrap's default input height */
+  }
+  
+  
+  .img-fluid {
+    max-width: 80%;
+    height: auto;
+  }
+  
+  @media (max-width: 767.98px) {
+    .login-box-container {
+      flex-direction: column;
+    }
+  
+    .login-image-container {
+      display: none;
+    }
+  }
+  
