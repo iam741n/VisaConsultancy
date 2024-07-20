@@ -8,8 +8,6 @@ const ViewReminder = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [showUpdateSuccess, setShowUpdateSuccess] = useState(false);
-  const [ampm, setAmpm] = useState('AM');
-  const [time, setTime] = useState('');
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
   useEffect(() => {
@@ -22,7 +20,6 @@ const ViewReminder = () => {
       setReminders(response.data);
     } catch (error) {
       console.error('Error fetching reminders:', error);
-      // Handle error scenario
     }
   };
 
@@ -35,7 +32,6 @@ const ViewReminder = () => {
       setSelectedReminder(null); // Clear selected reminder after update
     } catch (error) {
       console.error('Error updating reminder:', error);
-      // Handle error scenario
     }
   };
 
@@ -48,7 +44,6 @@ const ViewReminder = () => {
       setSelectedReminder(null); // Clear selected reminder after delete
     } catch (error) {
       console.error('Error deleting reminder:', error);
-      // Handle error scenario
     }
   };
 
@@ -60,6 +55,11 @@ const ViewReminder = () => {
   const openDeleteModal = (reminder) => {
     setSelectedReminder(reminder);
     setShowDeleteModal(true);
+  };
+
+  const formatDate = (date) => {
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate) ? 'Invalid date' : parsedDate.toLocaleDateString();
   };
 
   return (
@@ -80,27 +80,26 @@ const ViewReminder = () => {
         </Alert>
       )}
 
-<Row>
-  {reminders.map((reminder) => (
-    <Col key={reminder.id} md={4}>
-      <Card style={{ marginBottom: '20px' }}>
-        <Card.Body>
-          <Card.Title>{reminder.Title}</Card.Title>
-          <Card.Text>{reminder.Description}</Card.Text>
-          <Card.Text>Date: {reminder.Date}</Card.Text>
-          <Card.Text>Time: {reminder.Time}</Card.Text>
-          <Button variant="primary" onClick={() => openUpdateModal(reminder)}>
-            Update
-          </Button>
-          <Button variant="danger" style={{ marginLeft: '10px' }} onClick={() => openDeleteModal(reminder)}>
-            Delete
-          </Button>
-        </Card.Body>
-      </Card>
-    </Col>
-  ))}
-</Row>
-
+      <Row>
+        {reminders.map((reminder) => (
+          <Col key={reminder.Id} md={4}>
+            <Card style={{ marginBottom: '20px' }}>
+              <Card.Body>
+                <Card.Title>{reminder.Title}</Card.Title>
+                <Card.Text>{reminder.Description}</Card.Text>
+                <Card.Text>Date: {formatDate(reminder.Date)}</Card.Text>
+                <Card.Text>Time: {reminder.Time}</Card.Text>
+                <Button variant="primary" onClick={() => openUpdateModal(reminder)}>
+                  Update
+                </Button>
+                <Button variant="danger" style={{ marginLeft: '10px' }} onClick={() => openDeleteModal(reminder)}>
+                  Delete
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
 
       {/* Update Reminder Modal */}
       <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
@@ -136,19 +135,21 @@ const ViewReminder = () => {
                 onChange={(e) => setSelectedReminder({ ...selectedReminder, Date: e.target.value })}
               />
             </Form.Group>
-            <Form.Control
-  type="time"
-  value={selectedReminder?.Time || ''}
-  onChange={(e) => {
-    const timeValue = e.target.value;
-    setSelectedReminder({
-      ...selectedReminder,
-      Time: timeValue, // HH:mm format from input type="time"
-      TimeFormatted: timeValue + ' ' + (parseInt(timeValue.split(':')[0]) >= 12 ? 'PM' : 'AM') // Example logic for AM/PM
-    });
-  }}
-/>
-
+            <Form.Group controlId="formTime">
+              <Form.Label>Time</Form.Label>
+              <Form.Control
+                type="time"
+                value={selectedReminder?.Time || ''}
+                onChange={(e) => {
+                  const timeValue = e.target.value;
+                  setSelectedReminder({
+                    ...selectedReminder,
+                    Time: timeValue, // HH:mm format from input type="time"
+                    TimeFormatted: timeValue + ' ' + (parseInt(timeValue.split(':')[0]) >= 12 ? 'PM' : 'AM') // Example logic for AM/PM
+                  });
+                }}
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>

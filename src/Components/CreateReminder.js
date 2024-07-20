@@ -8,7 +8,6 @@ const CreateReminder = () => {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [ampm, setAmpm] = useState('AM');
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -17,12 +16,13 @@ const CreateReminder = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const timeWithAmpm = `${time} ${ampm}`;
+    
+    // Time should already be in 24-hour format from the input
     const reminderData = {
       Title: title,
       Description: description,
       Date: date,
-      Time: timeWithAmpm,
+      Time: time,
     };
 
     try {
@@ -111,16 +111,13 @@ const CreateReminder = () => {
 
               <Form.Group controlId="formTime">
                 <Form.Label style={{ color: 'white', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Time</Form.Label>
-                <div style={{ display: 'flex' }}>
-                  <Form.Control
-                    type="time"
-                    placeholder="Enter time in 12-hour format (HH:MM)"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    required
-                    style={{ marginRight: '10px' }}
-                  />
-                </div>
+                <Form.Control
+                  type="time"  // 24-hour format by default
+                  placeholder="Enter time (HH:MM)"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  required
+                />
               </Form.Group>
 
               <Button variant="primary" type="submit" block>
