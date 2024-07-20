@@ -6,6 +6,8 @@ import { faBell ,faClock} from '@fortawesome/free-solid-svg-icons';
 import jsPDF from 'jspdf';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import AlarmModal from './AlarmModal'; // Import the AlarmModal component
+import { parseISO, format, isWithinInterval, addMinutes } from 'date-fns'; // Import date-fns functions
 import '../Dashboard.css';
 
 const Dashboard = () => {
@@ -39,6 +41,8 @@ const Dashboard = () => {
   const [showClearConfirmation, setShowClearConfirmation] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [reminders, setReminders] = useState([]);
+  const [showAlarm, setShowAlarm] = useState(false);
+  const [currentReminder, setCurrentReminder] = useState(null);
 
   useEffect(() => {
     const fetchReminders = async () => {
@@ -52,6 +56,51 @@ const Dashboard = () => {
 
     fetchReminders();
 }, []);
+
+// Check if any reminder matches the current time
+useEffect(() => {
+  const checkReminders = () => {
+    const now = new Date();
+
+    reminders.forEach((reminder) => {
+      if (!reminder.Date || !reminder.Time) return;
+
+      // Split reminder.Date and reminder.Time to ensure correct format
+      const [year, month, day] = reminder.Date.split('-').map(num => parseInt(num, 10));
+      const [hours, minutes] = reminder.Time.split(':').map(num => parseInt(num, 10));
+
+      // Create a date object using parsed values
+      const reminderDateTime = new Date(year, month - 1, day, hours, minutes);
+
+      if (isNaN(reminderDateTime.getTime())) {
+        console.error('Invalid date/time:', reminder.Date, reminder.Time);
+        return;
+      }
+
+      // Check if the reminder's datetime matches the current datetime within a minute
+      const timeDifference = Math.abs(now.getTime() - reminderDateTime.getTime());
+      if (timeDifference < 60000) { // Check within a minute
+        setCurrentReminder(reminder);
+        setShowAlarm(true);
+        // Play alarm sound
+        new Audio('/alarm.mp3').play();
+      }
+    });
+  };
+
+  const interval = setInterval(checkReminders, 60000); // Check every minute
+  return () => clearInterval(interval); // Cleanup on unmount
+}, [reminders]);
+
+
+const handleSnooze = () => {
+  // Implement snooze functionality here
+  setShowAlarm(false);
+};
+
+const handleCloseAlarm = () => {
+  setShowAlarm(false);
+};
 
 const toggleDropdown = () => setShowDropdown(!showDropdown);
 
@@ -220,30 +269,30 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                                     </span>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Header>Notifications</Dropdown.Header>
-                                    {reminders.map((reminder) => (
-                                        <Dropdown.Item key={reminder.Id}>
-                                            <div className="d-flex align-items-center">
-                                                <div className="me-3">
-                                                    <FontAwesomeIcon icon={faClock} className="text-warning" style={{ fontSize: '40px' }} />
-                                                </div>
-                                                <div>
-                                                    <strong>{reminder.Title}</strong>
-                                                    <div className="small text-muted">
-                                                        {new Date(reminder.Date).toLocaleDateString()} {/* Date only */}
-                                                    </div>
-                                                    <div className="small text-muted">
-                                                        {new Date(`1970-01-01T${reminder.Time}:00`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })} {/* 12-hour time */}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Dropdown.Item>
-                                    ))}
-                                    <Dropdown.Divider />
-                                    <Dropdown.Item className="text-center text-primary">
-                                        <Link to="/ViewReminder" className="text-primary text-decoration-none">View All</Link>
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
+                  <Dropdown.Header>Notifications</Dropdown.Header>
+                  {reminders.map((reminder) => (
+                    <Dropdown.Item key={reminder.Id}>
+                      <div className="d-flex align-items-center">
+                        <div className="me-3">
+                          <FontAwesomeIcon icon={faClock} className="text-warning" style={{ fontSize: '40px' }} />
+                        </div>
+                        <div>
+                          <strong>{reminder.Title}</strong>
+                          <div className="small text-muted">
+                            {format(parseISO(reminder.Date), 'MM/dd/yyyy')} {/* Date only */}
+                          </div>
+                          <div className="small text-muted">
+                            {format(parseISO(`1970-01-01T${reminder.Time}:00`), 'hh:mm a')} {/* 12-hour time */}
+                          </div>
+                        </div>
+                      </div>
+                    </Dropdown.Item>
+                  ))}
+                  <Dropdown.Divider />
+                  <Dropdown.Item className="text-center text-primary">
+                    <Link to="/ViewReminder" className="text-primary text-decoration-none">View All</Link>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
                             </Dropdown>
                         </Nav>
           </Navbar.Collapse>
@@ -581,6 +630,15 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             DATE: {dueDate}
           </div>
         </div>
+
+        {showAlarm && currentReminder && (
+        <AlarmModal
+          show={showAlarm}
+          onClose={handleCloseAlarm}
+          onSnooze={handleSnooze}
+          reminder={currentReminder}
+        />
+      )}
 
     
     </div>
