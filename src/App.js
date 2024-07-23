@@ -12,6 +12,7 @@ import AllCustomerByDate from './Components/AllCustomerByDate';
 import CreateReminder from './Components/CreateReminder';
 import ViewReminder from './Components/ViewReminder';
 import AlarmModal from './Components/AlarmModal';
+import Expense from './Components/Expense';
 function App() {
   return (
     <Router>
@@ -26,6 +27,7 @@ function App() {
    <Route path="/CreateReminder" element={<CreateReminder />} />
    <Route path="/ViewReminder" element={<ViewReminder />} />
    <Route path="/AlarmModal" element={<AlarmModal />} />
+   <Route path="/Expense" element={<Expense />} />
    </Routes>
    </Router>
  
