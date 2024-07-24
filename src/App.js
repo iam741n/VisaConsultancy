@@ -13,6 +13,7 @@ import CreateReminder from './Components/CreateReminder';
 import ViewReminder from './Components/ViewReminder';
 import AlarmModal from './Components/AlarmModal';
 import Expense from './Components/Expense';
+import ManageEmpolyees from './Components/ManageEmployees';
 function App() {
   return (
     <Router>
@@ -28,6 +29,7 @@ function App() {
    <Route path="/ViewReminder" element={<ViewReminder />} />
    <Route path="/AlarmModal" element={<AlarmModal />} />
    <Route path="/Expense" element={<Expense />} />
+   <Route path="/ManageEmpolyees" element={<ManageEmpolyees />} />
    </Routes>
    </Router>
  

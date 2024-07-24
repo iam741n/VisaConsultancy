@@ -96,6 +96,7 @@ const AdminDashboard = () => {
               <NavDropdown title="Settings" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to='/UpdatePasswordEmpolyee' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown title="Expense" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
