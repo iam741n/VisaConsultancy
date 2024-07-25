@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Modal, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Button, Nav, Modal,Card, NavDropdown, Navbar, Form, Alert } from 'react-bootstrap';
+import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import '../ManageEmpolyees.css'; // Corrected path to the CSS file
 import maleImage from '../assets/male.png';
 import femaleImage from '../assets/female.png';
 
 const ManageEmployees = () => {
+  const location = useLocation();
+  const { userData } = location.state || {};
   const [users, setUsers] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
@@ -48,6 +51,33 @@ const ManageEmployees = () => {
   };
 
   return (
+    <div>
+    <Navbar bg="dark" variant="dark" expand="lg">
+    <Container>
+      <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Link href="/AdminDashboard">Home</Nav.Link>
+          <NavDropdown title="Client History" id="basic-nav-dropdown">
+          <Link to='/AllCustomerByDate' className="dropdown-item">Client Record by Date</Link>
+            <Link to='/AllCustomers' className="dropdown-item">All clients</Link>
+            </NavDropdown>
+            <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+            <NavDropdown title="Settings" id="basic-nav-dropdown">
+            <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
+          </NavDropdown>
+          <NavDropdown title="Expense" id="basic-nav-dropdown">
+            <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
+            <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
+          </NavDropdown>
+          <Nav.Link href="/">Logout</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Container>
+  </Navbar>
     <Container>
       <h1 className="text-center mt-4">Manage Employees</h1>
 
@@ -89,6 +119,7 @@ const ManageEmployees = () => {
             <p><strong>Last Name:</strong> {selectedUser.Last_Name}</p>
             <p><strong>Phone No:</strong> {selectedUser.Phone_No}</p>
             <p><strong>Email:</strong> {selectedUser.Email}</p>
+            <p><strong>Password:</strong> {selectedUser.Password}</p>
             <p><strong>Gender:</strong> {selectedUser.Gender}</p>
             <p><strong>Role:</strong> {selectedUser.Role}</p>
           </Modal.Body>
@@ -110,6 +141,7 @@ const ManageEmployees = () => {
         </Modal.Footer>
       </Modal>
     </Container>
+    </div>
   );
 };
 

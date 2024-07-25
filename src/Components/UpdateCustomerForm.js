@@ -1,199 +1,98 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Nav, Navbar, Form, Button, Modal, Alert,NavDropdown,Dropdown } from 'react-bootstrap';
-import { useLocation,Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell ,faClock} from '@fortawesome/free-solid-svg-icons';
-import jsPDF from 'jspdf';
-import axios from 'axios';
+import { Container, Row, Col, Form, Button, Navbar, Nav, NavDropdown, Modal, Alert } from 'react-bootstrap';
+import { Link, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
-import AlarmModal from './AlarmModal'; // Import the AlarmModal component
-import { parseISO, format, isWithinInterval, addMinutes } from 'date-fns'; // Import date-fns functions
-import '../Dashboard.css';
+import jsPDF from 'jspdf';
+import '../UpdateCustomerForm.css';
 
-const Dashboard = () => {
+const UpdateCustomerForm = () => {
   const location = useLocation();
-  const userData = location.state?.userData;
+  const [customerData, setCustomerData] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
   const [receiptCount, setReceiptCount] = useState(1);
   const [customer, setCustomer] = useState('');
-  const [dueDate, setDueDate] = useState('2024-06-26');
-  const [termDays, setTermDays] = useState(0);
-  const [expectedDate, setExpectedDate] = useState('2024-07-26');
-  const [balance, setBalance] = useState('195,000');
-  const [discount, setDiscount] = useState('0');
-  const [paidAmount, setPaidAmount] = useState('0');
-  const [paidBy, setPaidBy] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [expectedDate, setExpectedDate] = useState('');
   const [visaType, setVisaType] = useState('Study Visa');
+  const [termDays, setTermDays] = useState('');
+  const [balance, setBalance] = useState('');
+  const [paidBy, setPaidBy] = useState('');
+  const [consultancyFee, setConsultancyFee] = useState('');
+  const [registrationFee, setRegistrationFee] = useState('');
+  const [ticket, setTicket] = useState('');
+  const [hotelBooking, setHotelBooking] = useState('');
+  const [applicationForm, setApplicationForm] = useState('');
+  const [travelInsurance, setTravelInsurance] = useState('');
+  const [appointment, setAppointment] = useState('');
   const [notes, setNotes] = useState('');
-  const [consultancyFee, setConsultancyFee] = useState('0');
-  const [registrationFee, setRegistrationFee] = useState('0');
-  const [applicationForm, setApplicationForm] = useState('0');
-  const [hotelBooking, setHotelBooking] = useState('0');
-  const [travelInsurance, setTravelInsurance] = useState('0');
-  const [appointment, setAppointment] = useState('0');
-  const [ticket, setTicket] = useState('0');
-  const [remainingAmount, setRemainingAmount] = useState('0');
-  const [total, setTotal] = useState('0');
+  const [documents, setDocuments] = useState('');
+  const [discount, setDiscount] = useState('');
+  const [paidAmount, setPaidAmount] = useState('');
+  const [remainingAmount, setRemainingAmount] = useState('');
+  const [total, setTotal] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [documents, setDocuments] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  // State for Clear Confirmation Modal
-  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [reminders, setReminders] = useState([]);
-  const [showAlarm, setShowAlarm] = useState(false);
-  const [currentReminder, setCurrentReminder] = useState(null);
 
   useEffect(() => {
-    const fetchReminders = async () => {
-        try {
-            const response = await axios.get('http://localhost/Visa/api/Reminder/GetReminders'); // Replace with your actual API endpoint
-            setReminders(response.data);
-        } catch (error) {
-            console.error('Error fetching reminders:', error);
-        }
+    // Fetch the data from the location or an API endpoint
+    const fetchCustomerData = async () => {
+      const data = location.state?.customerData || {}; // For demo purposes
+      setCustomerData(data);
+      setCustomer(data.customer || '');
+      setDueDate(data.dueDate || '');
+      setExpectedDate(data.expectedDate || '');
+      setVisaType(data.visaType || 'Study Visa');
+      setTermDays(data.termDays || '');
+      setBalance(data.balance || '');
+      setPaidBy(data.paidBy || '');
+      setConsultancyFee(data.consultancyFee || '');
+      setRegistrationFee(data.registrationFee || '');
+      setTicket(data.ticket || '');
+      setHotelBooking(data.hotelBooking || '');
+      setApplicationForm(data.applicationForm || '');
+      setTravelInsurance(data.travelInsurance || '');
+      setAppointment(data.appointment || '');
+      setNotes(data.notes || '');
+      setDocuments(data.documents || '');
+      setDiscount(data.discount || '');
+      setPaidAmount(data.paidAmount || '');
+      setRemainingAmount(data.remainingAmount || '');
+      setTotal(data.total || '');
+      setFirstName(data.firstName || '');
+      setLastName(data.lastName || '');
     };
 
-    fetchReminders();
-}, []);
-
-// Check if any reminder matches the current time
-useEffect(() => {
-  const checkReminders = () => {
-    const now = new Date();
-
-    reminders.forEach((reminder) => {
-      if (!reminder.Date || !reminder.Time) return;
-
-      // Split reminder.Date and reminder.Time to ensure correct format
-      const [year, month, day] = reminder.Date.split('-').map(num => parseInt(num, 10));
-      const [hours, minutes] = reminder.Time.split(':').map(num => parseInt(num, 10));
-
-      // Create a date object using parsed values
-      const reminderDateTime = new Date(year, month - 1, day, hours, minutes);
-
-      if (isNaN(reminderDateTime.getTime())) {
-        console.error('Invalid date/time:', reminder.Date, reminder.Time);
-        return;
-      }
-
-      // Check if the reminder's datetime matches the current datetime within a minute
-      const timeDifference = Math.abs(now.getTime() - reminderDateTime.getTime());
-      if (timeDifference < 60000) { // Check within a minute
-        setCurrentReminder(reminder);
-        setShowAlarm(true);
-        // Play alarm sound
-        new Audio('/alarm.mp3').play();
-      }
-    });
-  };
-
-  const interval = setInterval(checkReminders, 60000); // Check every minute
-  return () => clearInterval(interval); // Cleanup on unmount
-}, [reminders]);
-
-
-const handleSnooze = () => {
-  // Implement snooze functionality here
-  setShowAlarm(false);
-};
-
-const handleCloseAlarm = () => {
-  setShowAlarm(false);
-};
-
-const toggleDropdown = () => setShowDropdown(!showDropdown);
+    fetchCustomerData();
+  }, [location.state]);
 
   useEffect(() => {
-    const dueDateObj = new Date(dueDate);
-    const expectedDateObj = new Date(expectedDate);
-    const diffTime = Math.abs(expectedDateObj - dueDateObj);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    setTermDays(diffDays);
+    if (dueDate && expectedDate) {
+      const dueDateObj = new Date(dueDate);
+      const expectedDateObj = new Date(expectedDate);
+      const diffTime = Math.abs(expectedDateObj - dueDateObj);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setTermDays(diffDays);
+    }
   }, [dueDate, expectedDate]);
 
   useEffect(() => {
-    const balanceNum = parseFloat(balance.replace(/,/g, '')) || 0;
-    const discountNum = parseFloat(discount) || 0;
-    const paidAmountNum = parseFloat(paidAmount) || 0;
-    const totalAmount = balanceNum - discountNum;
-    const remainingAmountNum = totalAmount - paidAmountNum;
+    if (balance && discount && paidAmount) {
+      const balanceNum = parseFloat(balance.replace(/,/g, '')) || 0;
+      const discountNum = parseFloat(discount) || 0;
+      const paidAmountNum = parseFloat(paidAmount) || 0;
+      const totalAmount = balanceNum - discountNum;
+      const remainingAmountNum = totalAmount - paidAmountNum;
 
-    setRemainingAmount(remainingAmountNum.toFixed(2));
-    setTotal(totalAmount.toFixed(2));
+      setRemainingAmount(remainingAmountNum.toFixed(2));
+      setTotal(totalAmount.toFixed(2));
+    }
   }, [balance, discount, paidAmount]);
 
-  useEffect(() => {
-    if (userData) {
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
-    }
-  }, [userData]);
-
   const handleSaveForm = () => {
-    const formData = {
-      CustomerName: customer,
-      DueDate: dueDate,
-      ExpectedDate: expectedDate,
-      TermDays: termDays,
-      Documents: documents,
-      VisaType: visaType,
-      Notes: notes,
-      ConsultancyFee: parseFloat(consultancyFee),
-      RegistrationFee: parseFloat(registrationFee),
-      ApplicationForm: parseFloat(applicationForm),
-      HotelBooking: parseFloat(hotelBooking),
-      TravelInsurance: parseFloat(travelInsurance),
-      Appointment: parseFloat(appointment),
-      Tickets: parseInt(ticket),
-      PaidBy: paidBy,
-      PaidTo: `${firstName} ${lastName}`,
-      Balance: parseFloat(balance.replace(/,/g, '')),
-      Discount: parseFloat(discount),
-      PaidAmount: parseFloat(paidAmount),
-      RemainingAmount: parseFloat(remainingAmount),
-      Total: parseFloat(total),
-      CreatedAt: new Date().toISOString()
-    };
-  
-    axios.post('http://localhost/Visa/api/Customer/post', formData, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      console.log('Form saved successfully:', response.data);
-      setSuccessMessage('Form saved successfully!');
-      setCustomer('');
-      setDueDate('2024-06-26');
-      setTermDays(0);
-      setExpectedDate('2024-07-26');
-      setBalance('0');
-      setDiscount('0');
-      setPaidAmount('0');
-      setPaidBy('');
-      setVisaType('Study Visa');
-      setNotes('');
-      setConsultancyFee('0');
-      setRegistrationFee('0');
-      setApplicationForm('0');
-      setHotelBooking('0');
-      setTravelInsurance('0');
-      setAppointment('0');
-      setTicket('0');
-      setRemainingAmount('0');
-      setTotal('0');
-      setFirstName(`${firstName}`);
-      setDocuments('');
-      setLastName(`${lastName}`);
-    })
-    .catch(error => {
-      console.error('Error saving form:', error);
-      alert(`Error: ${error.message}`);
-    });
+    // Implement save logic here
+    setSuccessMessage('Customer data updated successfully!');
   };
-  
-  
 
   const handleClearForm = () => {
     setShowClearConfirmation(true);
@@ -201,25 +100,25 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   const handleConfirmClearList = () => {
     setCustomer('');
-    setDueDate('2024-06-26');
-    setTermDays(0);
-    setExpectedDate('2024-07-26');
-    setBalance('0');
-    setDiscount('0');
-    setPaidAmount('0');
+    setDueDate('');
+    setExpectedDate('');
+    setVisaType('Study Visa');
+    setTermDays('');
+    setBalance('');
     setPaidBy('');
-    setVisaType('');
-    setNotes('');
     setConsultancyFee('');
     setRegistrationFee('');
-    setApplicationForm('');
+    setTicket('');
     setHotelBooking('');
+    setApplicationForm('');
     setTravelInsurance('');
     setAppointment('');
-    setTicket('0');
-    setRemainingAmount('0');
-    setTotal('0');
+    setNotes('');
     setDocuments('');
+    setDiscount('');
+    setPaidAmount('');
+    setRemainingAmount('');
+    setTotal('');
     setShowClearConfirmation(false);
   };
 
@@ -247,50 +146,13 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Nav.Link href="/Dashboard">Home</Nav.Link>
-                <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
+              <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
+                <Link to='/UpdatePasswordEmpolyee' className="dropdown-item">Change Credentials</Link>
                 <Link to='/CreateReminderEmployee' className="dropdown-item">Create Reminder</Link>
-                
               </NavDropdown>
               <Nav.Link href="/">Logout</Nav.Link>
             </Nav>
-            <Nav className="ms-auto">
-                            <Dropdown show={showDropdown} onToggle={toggleDropdown} align="end">
-                                <Dropdown.Toggle as="a" className="nav-link text-white position-relative" onClick={toggleDropdown}>
-                                    <FontAwesomeIcon icon={faBell} />
-                                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {reminders.length}
-                                        <span className="visually-hidden">unread notifications</span>
-                                    </span>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                  <Dropdown.Header>Notifications</Dropdown.Header>
-                  {reminders.map((reminder) => (
-                    <Dropdown.Item key={reminder.Id}>
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          <FontAwesomeIcon icon={faClock} className="text-warning" style={{ fontSize: '40px' }} />
-                        </div>
-                        <div>
-                          <strong>{reminder.Title}</strong>
-                          <div className="small text-muted">
-                            {format(parseISO(reminder.Date), 'MM/dd/yyyy')} {/* Date only */}
-                          </div>
-                          <div className="small text-muted">
-                            {format(parseISO(`1970-01-01T${reminder.Time}:00`), 'hh:mm a')} {/* 12-hour time */}
-                          </div>
-                        </div>
-                      </div>
-                    </Dropdown.Item>
-                  ))}
-                  <Dropdown.Divider />
-                  <Dropdown.Item className="text-center text-primary">
-                    <Link to="/ViewReminder" className="text-primary text-decoration-none">View All</Link>
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-                            </Dropdown>
-                        </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -305,10 +167,9 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             fontWeight: 'bold'
           }}
         >
-          Customer Form
+          Update Customer Form
         </h1>
-        <Form>
-          <Row className="mb-3">
+        <Row className="mb-3">
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Customer Name</Form.Label>
@@ -343,6 +204,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               </Form.Group>
             </Col>
           </Row>
+
 
           <Row className="mb-3">
             <Col>
@@ -572,16 +434,14 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
           </Col>
         </Row>
 
-        </Form>
-      </Container>
-       
+        
 
       {/* Clear Confirmation Modal */}
       <Modal show={showClearConfirmation} onHide={handleCancelClearList}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmation</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to discard all the items?</Modal.Body>
+        <Modal.Body>Are you sure you want to discard all changes?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCancelClearList}>No</Button>
           <Button variant="danger" onClick={handleConfirmClearList}>Yes</Button>
@@ -627,18 +487,9 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
           </div>
         </div>
 
-        {showAlarm && currentReminder && (
-        <AlarmModal
-          show={showAlarm}
-          onClose={handleCloseAlarm}
-          onSnooze={handleSnooze}
-          reminder={currentReminder}
-        />
-      )}
-
-    
+      </Container>
     </div>
   );
 };
 
-export default Dashboard;
+export default UpdateCustomerForm;

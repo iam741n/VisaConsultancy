@@ -1,0 +1,93 @@
+/* Dashboard.css */
+
+/* Container styling
+.container {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+} */
+
+/* Form field styling */
+.form-group {
+    margin-bottom: 15px;
+  }
+  
+  /* Small form labels */
+  .form-label-small {
+    font-size: 14px;
+  }
+  
+  /* Small form controls */
+  .form-control-small {
+    height: 30px;
+    font-size: 14px;
+  }
+  
+  /* Box container styling */
+  .box-container {
+    background-color: #6721b8;
+    padding: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .receipt-container {
+    width: 300px;
+    border: 1px solid black;
+    padding: 10px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+  }
+  
+  .receipt-header, .receipt-footer {
+    background-color: red;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .receipt-section {
+    padding: 5px 0;
+  }
+  
+  .receipt-box {
+    border: 1px solid black;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .receipt-summary {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0;
+  }
+  
+  .receipt-summary div {
+    padding: 5px;
+    border: 1px solid black;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  
+  .receipt-logo {
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .receipt-logo img {
+    width: 100px;
+  }
+  
+  .receipt-note {
+    background-color: red;
+    color: white;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+  }
+  

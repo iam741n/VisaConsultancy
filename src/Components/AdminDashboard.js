@@ -93,8 +93,9 @@ const AdminDashboard = () => {
                 <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
               </NavDropdown>
               <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+              <Nav.Link as={Link} to="/UpdateCustomerForm">Customer form</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <NavDropdown.Item as={Link} to='/UpdatePasswordEmpolyee' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
               </NavDropdown>

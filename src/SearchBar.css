@@ -1,0 +1,87 @@
+.all-customers-container {
+    background-image: url('./assets/dash.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+
+.client-details-title {
+    color: White;
+    font-family: Arial, sans-serif;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+}
+
+.box {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.input {
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    background: none;
+    border: 4px solid #f7f7f7;
+    border-radius: 50px;
+    box-sizing: border-box;
+    font-family: Comic Sans MS;
+    font-size: 16px;
+    color: #ffffff;
+    outline: none;
+    transition: .5s;
+}
+
+.box:hover input {
+    width: 350px;
+    background: #3b3640;
+    border-radius: 10px;
+}
+
+.box i {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translate(-50%, -50%);
+    font-size: 26px;
+    color: white;
+    transition: .2s;
+}
+
+@media (max-width: 768px) {
+    .input {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+    }
+
+    .box:hover input {
+        width: 250px;
+    }
+
+    .client-details-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .input {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .box:hover input {
+        width: 200px;
+    }
+
+    .client-details-title {
+        font-size: 1.8rem;
+    }
+}

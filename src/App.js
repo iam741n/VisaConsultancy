@@ -14,6 +14,10 @@ import ViewReminder from './Components/ViewReminder';
 import AlarmModal from './Components/AlarmModal';
 import Expense from './Components/Expense';
 import ManageEmpolyees from './Components/ManageEmployees';
+import UpdatePasswordAdmin from './Components/UpdatePasswordAdmin';
+import ViewReminderEmpolyee from './Components/ViewRemindersEmpolyee';
+import CreateReminderEmployee from './Components/CreateReminderEmployee';
+import UpdateCustomerForm from './Components/UpdateCustomerForm';
 function App() {
   return (
     <Router>
@@ -30,6 +34,10 @@ function App() {
    <Route path="/AlarmModal" element={<AlarmModal />} />
    <Route path="/Expense" element={<Expense />} />
    <Route path="/ManageEmpolyees" element={<ManageEmpolyees />} />
+   <Route path="/UpdatePasswordAdmin" element={<UpdatePasswordAdmin />} />
+   <Route path="/ViewReminderEmpolyee" element={<ViewReminderEmpolyee />} />
+   <Route path="/CreateReminderEmployee" element={<CreateReminderEmployee />} />
+   <Route path="/UpdateCustomerForm" element={<UpdateCustomerForm/>} />
    </Routes>
    </Router>
  

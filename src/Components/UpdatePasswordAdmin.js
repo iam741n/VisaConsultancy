@@ -4,7 +4,7 @@ import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 
-const UpdatePasswordEmpolyee = () => {
+const UpdatePasswordAdmin = () => {
   const location = useLocation();
   const { userData } = location.state || {};
   const [email, setEmail] = useState(userData?.Email || ''); // Initialize with passed email
@@ -64,13 +64,20 @@ const UpdatePasswordEmpolyee = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link href="/Dashboard">Home</Nav.Link>
-              <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
-              
-              <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
-                <NavDropdown.Item as={Link} to='/CreateReminderEmployee'>Create Reminders</NavDropdown.Item>
-                
+              <Nav.Link href="/AdminDashboard">Home</Nav.Link>
+              <NavDropdown title="Client History" id="basic-nav-dropdown">
+              <Link to='/AllCustomerByDate' className="dropdown-item">Client Record by Date</Link>
+                <Link to='/AllCustomers' className="dropdown-item">All clients</Link>
+                </NavDropdown>
+                <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+                <NavDropdown title="Settings" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Expense" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
               </NavDropdown>
               <Nav.Link href="/">Logout</Nav.Link>
             </Nav>
@@ -151,4 +158,4 @@ const UpdatePasswordEmpolyee = () => {
   );
 };
 
-export default UpdatePasswordEmpolyee;
+export default UpdatePasswordAdmin;
