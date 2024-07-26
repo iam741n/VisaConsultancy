@@ -3,21 +3,23 @@ import { Container, Row, Col, Form, Button, Navbar, Nav, NavDropdown, Modal, Ale
 import { Link, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import axios from 'axios';
 import '../UpdateCustomerForm.css';
 
 const UpdateCustomerForm = () => {
   const location = useLocation();
-  const [customerData, setCustomerData] = useState(null);
+  const [customerData, setCustomerData] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showClearConfirmation, setShowClearConfirmation] = useState(false);
   const [receiptCount, setReceiptCount] = useState(1);
-  const [customer, setCustomer] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [expectedDate, setExpectedDate] = useState('');
   const [visaType, setVisaType] = useState('Study Visa');
   const [termDays, setTermDays] = useState('');
   const [balance, setBalance] = useState('');
   const [paidBy, setPaidBy] = useState('');
+  const [paidTo, setPaidTo] = useState('');
   const [consultancyFee, setConsultancyFee] = useState('');
   const [registrationFee, setRegistrationFee] = useState('');
   const [ticket, setTicket] = useState('');
@@ -31,40 +33,56 @@ const UpdateCustomerForm = () => {
   const [paidAmount, setPaidAmount] = useState('');
   const [remainingAmount, setRemainingAmount] = useState('');
   const [total, setTotal] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [customerId, setCustomerId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    // Fetch the data from the location or an API endpoint
-    const fetchCustomerData = async () => {
-      const data = location.state?.customerData || {}; // For demo purposes
-      setCustomerData(data);
-      setCustomer(data.customer || '');
-      setDueDate(data.dueDate || '');
-      setExpectedDate(data.expectedDate || '');
-      setVisaType(data.visaType || 'Study Visa');
-      setTermDays(data.termDays || '');
-      setBalance(data.balance || '');
-      setPaidBy(data.paidBy || '');
-      setConsultancyFee(data.consultancyFee || '');
-      setRegistrationFee(data.registrationFee || '');
-      setTicket(data.ticket || '');
-      setHotelBooking(data.hotelBooking || '');
-      setApplicationForm(data.applicationForm || '');
-      setTravelInsurance(data.travelInsurance || '');
-      setAppointment(data.appointment || '');
-      setNotes(data.notes || '');
-      setDocuments(data.documents || '');
-      setDiscount(data.discount || '');
-      setPaidAmount(data.paidAmount || '');
-      setRemainingAmount(data.remainingAmount || '');
-      setTotal(data.total || '');
-      setFirstName(data.firstName || '');
-      setLastName(data.lastName || '');
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get('http://localhost/Visa/api/Customer/GetAllCustomers');
+        setCustomerData(response.data);
+      } catch (error) {
+        console.error('Error fetching customer data:', error);
+      }
     };
 
-    fetchCustomerData();
-  }, [location.state]);
+    fetchCustomers();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCustomer) {
+      const customer = customerData.find(c => c.customer_name === selectedCustomer);
+      if (customer) {
+        // Convert backend date format to YYYY-MM-DD
+        const formatDate = (dateStr) => {
+          return new Date(dateStr).toISOString().split('T')[0];
+        };
+  
+        setDueDate(formatDate(customer.due_date));
+        setCustomerId(customer.id);
+        setExpectedDate(formatDate(customer.expected_date));
+        setVisaType(customer.visa_type);
+        setTermDays(customer.term_days);
+        setBalance(customer.balance);
+        setPaidBy(customer.paid_by);
+        setPaidTo(customer.paid_to);
+        setConsultancyFee(customer.consultancy_fee);
+        setRegistrationFee(customer.registration_fee);
+        setTicket(customer.tickets);
+        setHotelBooking(customer.hotel_booking);
+        setApplicationForm(customer.application_form);
+        setTravelInsurance(customer.travel_insurance);
+        setAppointment(customer.appointment);
+        setNotes(customer.notes);
+        setDocuments(customer.documents);
+        setDiscount(customer.discount);
+        setPaidAmount(customer.paid_amount);
+        setRemainingAmount(customer.remaining_amount);
+        setTotal(customer.total);
+      }
+    }
+  }, [selectedCustomer, customerData]);
+  
 
   useEffect(() => {
     if (dueDate && expectedDate) {
@@ -77,35 +95,105 @@ const UpdateCustomerForm = () => {
   }, [dueDate, expectedDate]);
 
   useEffect(() => {
-    if (balance && discount && paidAmount) {
-      const balanceNum = parseFloat(balance.replace(/,/g, '')) || 0;
+    if (typeof balance === 'string' || typeof balance === 'number') {
+      const balanceStr = typeof balance === 'string' ? balance : balance.toString();
       const discountNum = parseFloat(discount) || 0;
       const paidAmountNum = parseFloat(paidAmount) || 0;
+  
+      const balanceNum = parseFloat(balanceStr.replace(/,/g, '')) || 0;
+  
       const totalAmount = balanceNum - discountNum;
       const remainingAmountNum = totalAmount - paidAmountNum;
-
+  
       setRemainingAmount(remainingAmountNum.toFixed(2));
       setTotal(totalAmount.toFixed(2));
+    } else {
+      console.error('Invalid input types for balance, discount, or paidAmount');
     }
   }, [balance, discount, paidAmount]);
-
-  const handleSaveForm = () => {
-    // Implement save logic here
-    setSuccessMessage('Customer data updated successfully!');
+  
+  const handleSaveForm = async () => {
+    // Validate required fields
+    if (!selectedCustomer || !dueDate || !expectedDate || !paidBy || !paidTo || !visaType) {
+      setErrorMessage("Please fill in all required fields.");
+      return;
+    }
+  
+    try {
+      const updatedCustomer = {
+        CustomerName: selectedCustomer,
+        DueDate: new Date(dueDate).toISOString(),
+        ExpectedDate: new Date(expectedDate).toISOString(),
+        VisaType: visaType,
+        TermDays: parseInt(termDays, 10),
+        Documents: documents,
+        Notes: notes,
+        ConsultancyFee: parseFloat(consultancyFee),
+        RegistrationFee: parseFloat(registrationFee),
+        ApplicationForm: parseFloat(applicationForm),
+        HotelBooking: parseFloat(hotelBooking),
+        TravelInsurance: parseFloat(travelInsurance),
+        Appointment: parseFloat(appointment),
+        Tickets: parseInt(ticket, 10),
+        PaidBy: paidBy,
+        PaidTo: paidTo,
+        Balance: parseFloat((balance || "").toString().replace(/,/g, '')),
+        Discount: parseFloat(discount),
+        PaidAmount: parseFloat(paidAmount),
+        RemainingAmount: parseFloat(remainingAmount),
+        Total: parseFloat(total),
+        CreatedAt: new Date().toISOString()
+      };
+  
+      console.log("Request Data:", updatedCustomer);
+  
+      const response = await axios.put(`http://localhost/Visa/api/customer/UpdateCustomer/${customerId}`, updatedCustomer, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (response.status === 200) {
+        setSuccessMessage("Customer data updated successfully!");
+        console.log("Customer data updated successfully!");
+        setErrorMessage('');
+      } else {
+        setErrorMessage("Failed to update customer data.");
+      }
+    } catch (error) {
+      console.error("Error updating customer data:", error);
+      if (error.response && error.response.data) {
+        console.error("Response data:", error.response.data);
+        setErrorMessage(`Failed to update customer data: ${error.response.data.Message}`);
+      } else {
+        setErrorMessage("An unknown error occurred.");
+      }
+    }
   };
+  
+  
+  
+    
+
+
+
+
+  
+  
 
   const handleClearForm = () => {
     setShowClearConfirmation(true);
   };
 
   const handleConfirmClearList = () => {
-    setCustomer('');
+    setSelectedCustomer('');
     setDueDate('');
     setExpectedDate('');
     setVisaType('Study Visa');
     setTermDays('');
     setBalance('');
     setPaidBy('');
+    setPaidTo('');
     setConsultancyFee('');
     setRegistrationFee('');
     setTicket('');
@@ -127,14 +215,18 @@ const UpdateCustomerForm = () => {
   };
 
   const handleGenerateReceipt = () => {
-    const input = document.getElementById('receipt'); // Assuming 'receipt' is the ID of your receipt container
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'PNG', 0, 0);
-        pdf.save('receipt.pdf');
-      });
+    const input = document.getElementById('receipt'); // Ensure this ID matches an existing element
+    if (input) {
+      html2canvas(input)
+        .then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
+          pdf.addImage(imgData, 'PNG', 0, 0);
+          pdf.save('receipt.pdf');
+        });
+    } else {
+      console.error('Receipt container not found');
+    }
   };
 
   return (
@@ -169,198 +261,218 @@ const UpdateCustomerForm = () => {
         >
           Update Customer Form
         </h1>
+
         <Row className="mb-3">
-            <Col>
-              <Form.Group>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Customer Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={customer}
-                  onChange={(e) => setCustomer(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
+              <Form.Control
+                as="select"
+                value={selectedCustomer}
+                onChange={(e) => setSelectedCustomer(e.target.value)}
+              >
+                <option value="">Select Customer</option>
+                {customerData.map((customer, index) => (
+                  <option key={index} value={customer.customer_name}>{customer.customer_name}</option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid By</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Paid By"
+                value={paidBy}
+                onChange={(e) => setPaidBy(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid To</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Paid TO"
+                value={paidTo}
+                onChange={(e) => setPaidTo(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Due Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Visa Type</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={visaType}
-                  onChange={(e) => setVisaType(e.target.value)}
-                >
-                  <option>Study Visa</option>
-                  <option>Visit Visa</option>
-                </Form.Control>
-              </Form.Group>
-            </Col>
-          </Row>
-
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Term Days</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={termDays}
-                  readOnly
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
+              <Form.Control
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Expected Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={expectedDate}
-                  onChange={(e) => setExpectedDate(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
+              <Form.Control
+                type="date"
+                value={expectedDate}
+                onChange={(e) => setExpectedDate(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Term Days</Form.Label>
+              <Form.Control
+                type="number"
+                value={termDays}
+                onChange={(e) => setTermDays(e.target.value)}
+                disabled
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Visa Type</Form.Label>
+              <Form.Control
+                as="select"
+                value={visaType}
+                onChange={(e) => setVisaType(e.target.value)}
+              >
+                <option>Study Visa</option>
+                <option>Visit Visa</option>
+              
+              </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={balance}
-                  onChange={(e) => setBalance(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid by</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={paidBy}
-                  onChange={(e) => setPaidBy(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid to</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={`${firstName} ${lastName}`}
-                  readOnly
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Consultancy Fee</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={consultancyFee}
-                  onChange={(e) => setConsultancyFee(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={registrationFee}
-                  onChange={(e) => setRegistrationFee(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Hotel Booking</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={hotelBooking}
-                  onChange={(e) => setHotelBooking(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Application Form</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={applicationForm}
-                  onChange={(e) => setApplicationForm(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Travel Insurance</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={travelInsurance}
-                  onChange={(e) => setTravelInsurance(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
+              <Form.Control
+                type="text"
+                placeholder="Enter Balance"
+                value={balance}
+                onChange={(e) => setBalance(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Appointment</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={appointment}
-                  onChange={(e) => setAppointment(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+              <Form.Control
+                type="text"
+                placeholder="Enter Appointment"
+                value={appointment}
+                onChange={(e) => setAppointment(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
-          <Row className="mb-2">
-            <Col>
-              <Form.Group>
+        <Row>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Consultancy Fee</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Consultancy Fee"
+                value={consultancyFee}
+                onChange={(e) => setConsultancyFee(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Registration Fee"
+                value={registrationFee}
+                onChange={(e) => setRegistrationFee(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Ticket</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Ticket"
+                value={ticket}
+                onChange={(e) => setTicket(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Hotel Booking</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Hotel Booking"
+                value={hotelBooking}
+                onChange={(e) => setHotelBooking(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Application Form</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Application Form"
+                value={applicationForm}
+                onChange={(e) => setApplicationForm(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Travel Insurance</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Travel Insurance"
+                value={travelInsurance}
+                onChange={(e) => setTravelInsurance(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Notes</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Enter Notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Documents</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={documents}
-                  onChange={(e) => setDocuments(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Enter Documents"
+                value={documents}
+                onChange={(e) => setDocuments(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
           <div className="box-container">
             <Row className="mb-3">
@@ -451,29 +563,28 @@ const UpdateCustomerForm = () => {
           <div className="receipt-header">RECEIPT OF PAYMENT</div>
           <div className="receipt-section">
             <div className="receipt-box">
-              <div>CLIENT NAME: {customer}</div>
-              <div>PAID BY: {paidBy}</div>
-              <div>PAID TO: {firstName} {lastName}</div>
-              <div>VISA TYPE: {visaType}</div>
-              <div>TICKET: {ticket}</div>
+            <div>CLIENT NAME: {selectedCustomer}</div>
+        <div>PAID BY: {paidBy}</div>
+        <div>PAID TO: {paidTo}</div>
+        <div>VISA TYPE: {visaType}</div>
+        <div>TICKET: {ticket}</div>
             </div>
             <div className="receipt-box">
-              <div>RECEIPT NO: {receiptCount}</div>
-              <div>CONSULTANCY FEE: {consultancyFee}</div>
-              <div>REGISTRATION FEE: {registrationFee}</div>
-              <div>HOTEL BOOKING: {hotelBooking}</div>
-              <div>APPLICATION FORM: {applicationForm}</div>
-              <div>TICKET: {ticket}</div>
-              <div>TRAVEL INSURANCE: {travelInsurance}</div>
-              <div>APPOINTMENT: {appointment}</div>
+            <div>RECEIPT NO: {receiptCount}</div>
+        <div>CONSULTANCY FEE: {consultancyFee}</div>
+        <div>REGISTRATION FEE: {registrationFee}</div>
+        <div>HOTEL BOOKING: {hotelBooking}</div>
+        <div>APPLICATION FORM: {applicationForm}</div>
+        <div>TRAVEL INSURANCE: {travelInsurance}</div>
+        <div>APPOINTMENT: {appointment}</div>
             </div>
           </div>
           <div className="receipt-summary">
-            <div>SUBTOTAL: {balance}</div>
-            <div>Discount: {discount}</div>
-            <div>RECEIVED: {paidAmount}</div>
-            <div>REMAINING: {remainingAmount}</div>
-            <div>Total Amount: {total}</div>
+          <div>SUBTOTAL: {balance}</div>
+      <div>DISCOUNT: {discount}</div>
+      <div>RECEIVED: {paidAmount}</div>
+      <div>REMAINING: {remainingAmount}</div>
+      <div>Total: {total}</div>
           </div>
         
           <div className="receipt-logo">

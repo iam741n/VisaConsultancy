@@ -10,9 +10,8 @@ function AllCustomers() {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+
 
   useEffect(() => {
     axios.get('http://localhost/Visa/api/Customer/GetAllCustomers')
@@ -31,12 +30,7 @@ function AllCustomers() {
 
   const handleCloseDetails = () => setShowDetailsModal(false);
 
-  const handleShowUpdate = (customer) => {
-    setSelectedCustomer(customer);
-    setShowUpdateModal(true);
-  };
 
-  const handleCloseUpdate = () => setShowUpdateModal(false);
 
   const filteredCustomers = customers.filter(customer =>
     customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -50,21 +44,7 @@ function AllCustomers() {
     }));
   };
 
-  const handleUpdate = () => {
-    if (!selectedCustomer) return;
-
-    axios.put(`http://localhost/Visa/api/customer/UpdateCustomer/${selectedCustomer.id}`, selectedCustomer)
-      .then(response => {
-        // Update customer in the state
-        setCustomers(customers.map(c => (c.id === selectedCustomer.id ? response.data : c)));
-        setShowUpdateModal(false);
-        setErrorMessage('');
-      })
-      .catch(error => {
-        console.error("There was an error updating the customer!", error.response ? error.response.data : error.message);
-        setErrorMessage('There was an error updating the customer. Please check the console for more details.');
-      });
-  };
+  
 
   return (
     <div className="all-customers-container">
@@ -119,7 +99,7 @@ function AllCustomers() {
               <th>Total Amount</th>
               <th>Paid Amount</th>
               <th>View Details</th>
-              <th>Modify Details</th>
+            
             </tr>
           </thead>
           <tbody>
@@ -136,9 +116,7 @@ function AllCustomers() {
                 <td>
                   <Button variant="info" onClick={() => handleShowDetails(customer)}>Details</Button>
                 </td>
-                <td>
-                  <Button variant="success" onClick={() => handleShowUpdate(customer)}>Modify</Button>
-                </td>
+                
               </tr>
             ))}
           </tbody>
@@ -186,216 +164,7 @@ function AllCustomers() {
         </Modal.Footer>
       </Modal>
 
-      {/* Update Modal */}
-      <Modal show={showUpdateModal} onHide={handleCloseUpdate}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update Client Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedCustomer && (
-            <Form>
-              <Form.Group controlId="formClientName">
-                <Form.Label>Client Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="customer_name"
-                  value={selectedCustomer.customer_name}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formVisaType">
-                <Form.Label>Visa Type</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="visa_type"
-                  value={selectedCustomer.visa_type}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formDueDate">
-                <Form.Label>Due Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="due_date"
-                  value={new Date(selectedCustomer.due_date).toISOString().substr(0, 10)}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formExpectedDate">
-                <Form.Label>Expected Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  name="expected_date"
-                  value={new Date(selectedCustomer.expected_date).toISOString().substr(0, 10)}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formTermDays">
-                <Form.Label>Term Days</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="term_days"
-                  value={selectedCustomer.term_days}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formDocuments">
-                <Form.Label>Documents</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="documents"
-                  value={selectedCustomer.documents}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formNotes">
-                <Form.Label>Notes</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="notes"
-                  value={selectedCustomer.notes}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formConsultancyFee">
-                <Form.Label>Consultancy Fee</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="consultancy_fee"
-                  value={selectedCustomer.consultancy_fee}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formRegistrationFee">
-                <Form.Label>Registration Fee</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="registration_fee"
-                  value={selectedCustomer.registration_fee}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formApplicationForm">
-                <Form.Label>Application Form</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="application_form"
-                  value={selectedCustomer.application_form}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formHotelBooking">
-                <Form.Label>Hotel Booking</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="hotel_booking"
-                  value={selectedCustomer.hotel_booking}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formTravelInsurance">
-                <Form.Label>Travel Insurance</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="travel_insurance"
-                  value={selectedCustomer.travel_insurance}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formAppointment">
-                <Form.Label>Appointment</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="appointment"
-                  value={selectedCustomer.appointment}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formTickets">
-                <Form.Label>Tickets</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="tickets"
-                  value={selectedCustomer.tickets}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formPaidBy">
-                <Form.Label>Paid By</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="paid_by"
-                  value={selectedCustomer.paid_by}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formPaidTo">
-                <Form.Label>Paid To</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="paid_to"
-                  value={selectedCustomer.paid_to}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formBalance">
-                <Form.Label>Balance</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="balance"
-                  value={selectedCustomer.balance}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formDiscount">
-                <Form.Label>Discount</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="discount"
-                  value={selectedCustomer.discount}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formPaidAmount">
-                <Form.Label>Paid Amount</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="paid_amount"
-                  value={selectedCustomer.paid_amount}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formRemainingAmount">
-                <Form.Label>Remaining Amount</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="remaining_amount"
-                  value={selectedCustomer.remaining_amount}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <Form.Group controlId="formTotal">
-                <Form.Label>Total</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="total"
-                  value={selectedCustomer.total}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Form>
-          )}
-          {errorMessage && <p className="text-danger">{errorMessage}</p>}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseUpdate}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleUpdate}>
-            Update
-          </Button>
-        </Modal.Footer>
-      </Modal>
+     
     </div>
   );
 }
