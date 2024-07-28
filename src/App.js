@@ -18,6 +18,8 @@ import UpdatePasswordAdmin from './Components/UpdatePasswordAdmin';
 import ViewReminderEmpolyee from './Components/ViewRemindersEmpolyee';
 import CreateReminderEmployee from './Components/CreateReminderEmployee';
 import UpdateCustomerForm from './Components/UpdateCustomerForm';
+import ProfitLossChart from './Components/ProfitLossChart';
+import DailyProgressChart from './Components/DailyProgressChart';
 function App() {
   return (
     <Router>
@@ -38,6 +40,8 @@ function App() {
    <Route path="/ViewReminderEmpolyee" element={<ViewReminderEmpolyee />} />
    <Route path="/CreateReminderEmployee" element={<CreateReminderEmployee />} />
    <Route path="/UpdateCustomerForm" element={<UpdateCustomerForm/>} />
+   <Route path="/ProfitLossChart" element={<ProfitLossChart/>} />
+   <Route path="/DailyProgressChart" element={<DailyProgressChart/>} />
    </Routes>
    </Router>
  

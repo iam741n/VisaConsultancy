@@ -8,6 +8,7 @@ import '../UpdateCustomerForm.css';
 
 const UpdateCustomerForm = () => {
   const location = useLocation();
+  const { userData } = location.state || {};
   const [customerData, setCustomerData] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -233,17 +234,31 @@ const UpdateCustomerForm = () => {
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="/Dashboard">Home</Nav.Link>
-              <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
-              <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <Link to='/UpdatePasswordEmpolyee' className="dropdown-item">Change Credentials</Link>
-                <Link to='/CreateReminderEmployee' className="dropdown-item">Create Reminder</Link>
-              </NavDropdown>
-              <Nav.Link href="/">Logout</Nav.Link>
+        <Navbar.Brand as={Link} to="/AdminDashboard">Jay Visa</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="me-auto">
+                            <Nav.Link as={Link} to="/AdminDashboard">Home</Nav.Link>
+                            <NavDropdown title="Client History" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+                            <Nav.Link as={Link} to="/UpdateCustomerForm">Update Customer Form</Nav.Link>
+                            <NavDropdown title="Settings" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Expense" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Progress" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/DailyProgressChart'>Today Progress</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/ProfitLossChart">Multiple days Progress</NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link as={Link} to="/">Logout</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

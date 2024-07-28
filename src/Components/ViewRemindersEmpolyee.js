@@ -66,7 +66,8 @@ const ViewReminderEmpolyee = () => {
   };
 
   return (
-  <div>
+    <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
     <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
@@ -87,7 +88,7 @@ const ViewReminderEmpolyee = () => {
         </Container>
       </Navbar>
     <Container>
-      <h1 className="text-center mt-4">Reminder Manager</h1>
+    <h1 className="text-center mt-4" style={{ color: 'White', fontFamily: 'Arial, sans-serif', fontSize: '2.5rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Reminder Manager</h1>
 
       {/* Success Alert for Update */}
       {showUpdateSuccess && (
