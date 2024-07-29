@@ -206,6 +206,12 @@ const ProfitLossChart = () => {
                 <FormInput type="text" className="form-control" id="profit" value={profit} readOnly />
               </div>
             </div>
+            <div className="row mt-2">
+            <FormLabel htmlFor="profit" className="col-sm-6 col-form-label">Date Range</FormLabel>
+            <div className="col-sm-6">
+            <FormInput type="text" className="form-control" id="dateRange" value={`${startDate} to ${endDate}`} readOnly />
+            </div>
+            </div>
           </CardContainer>
         </div>
       </div>

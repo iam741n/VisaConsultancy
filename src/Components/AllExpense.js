@@ -1,31 +1,36 @@
-import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Container, Navbar, Nav ,NavDropdown} from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button,Nav, NavDropdown,Navbar, Form, Alert } from 'react-bootstrap';
+import axios from 'axios';
 import { Link ,useLocation} from 'react-router-dom';
 
-function ViewExpense() {
+
+const AllExpense = () => {
     const location = useLocation();
     const { userData } = location.state || {};
-    const buttonStyle = {
-      borderRadius: '25px',
-      padding: '20px 40px',
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const response = await axios.get(`http://localhost/Visa/api/Expense/Expensebycurrentdate`);
+        if (Array.isArray(response.data)) {
+          setExpenses(response.data);
+        } else {
+          console.error('Response data is not an array:', response.data);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching expenses:', error);
+        setLoading(false);
+      }
     };
   
-    const buttonContainerStyle = {
-      textAlign: 'center',
-    };
-  
-    const buttonContainerMargin = {
-      marginTop: '20px',
-    };
-  
-    const boldText = {
-      fontWeight: 'bold',
-      fontSize: '26px',
-    };
-return(
-  <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-       <Navbar bg="dark" variant="dark" expand="lg">
+    fetchExpenses();
+  }, []);
+  return (
+    <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand as={Link} to="/AdminDashboard">Jay Visa</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -57,36 +62,34 @@ return(
         </Container>
       </Navbar>
 
-    <Container>
-        <div className="text-center mt-4">
-        <h1 className="text-center mt-4" style={{ color: 'White', fontFamily: 'Arial, sans-serif', fontSize: '2.5rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>View Expense</h1>
+
+    <div className="container mt-4">
+        
+
+
+    <h1 className="text-center mt-4" style={{ color: 'White', fontFamily: 'Arial, sans-serif', fontSize: '2.5rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>All Expenses</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : expenses.length === 0 ? (
+        <p>No expenses happened today.</p>
+      ) : (
+        <div className="row">
+          {expenses.map((expense) => (
+            <div key={expense.id} className="col-md-4 mb-4">
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">Expense Title: {expense.Title}</h5>
+                  <h6 className="card-text">Amount: {expense.Amount}</h6>
+                  <h6 className="card-text">Date: {new Date(expense.Date).toLocaleDateString()}</h6>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
+      )}
+    </div>
+    </div>
+  );
+};
 
-        <div className="d-flex justify-content-center mt-5" style={buttonContainerMargin}>
-          <div style={buttonContainerStyle}>
-            <Link to='/DailyExpense'>
-              <Button variant="primary" style={buttonStyle}>
-                Today Expense
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        <div className="d-flex justify-content-center mt-5" style={buttonContainerMargin}>
-          <div style={buttonContainerStyle}>
-            <Link to='/AllExpense'>
-              <Button variant="primary" style={buttonStyle}>
-                All Expenses
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-       
-        {/* You can add more content here */}
-      </Container>
-      </div>
-);
-}
-
-export default ViewExpense;
+export default AllExpense;
