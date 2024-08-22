@@ -43,6 +43,9 @@ const AdminDashboard = () => {
   const [reminders, setReminders] = useState([]);
   const [showAlarm, setShowAlarm] = useState(false);
   const [currentReminder, setCurrentReminder] = useState(null);
+  const [passportno, setPassportNo] = useState('');  // Use useState instead of useEffect
+  const [issuedate, setIssueDate] = useState('');    // Use useState instead of useEffect
+  const [expirydate, setExpiryDate] = useState('');  // Use useState instead of useEffect
 
   useEffect(() => {
     const fetchReminders = async () => {
@@ -130,68 +133,81 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     }
   }, [userData]);
 
+  const incrementReceiptCount = () => {
+    setReceiptCount(prevCount => prevCount + 1);
+  };
+
   const handleSaveForm = () => {
     const formData = {
-      CustomerName: customer,
-      DueDate: dueDate,
-      ExpectedDate: expectedDate,
-      TermDays: termDays,
-      Documents: documents,
-      VisaType: visaType,
-      Notes: notes,
-      ConsultancyFee: parseFloat(consultancyFee),
-      RegistrationFee: parseFloat(registrationFee),
-      ApplicationForm: parseFloat(applicationForm),
-      HotelBooking: parseFloat(hotelBooking),
-      TravelInsurance: parseFloat(travelInsurance),
-      Appointment: parseFloat(appointment),
-      Tickets: parseInt(ticket),
-      PaidBy: paidBy,
-      PaidTo: `${firstName} ${lastName}`,
-      Balance: parseFloat(balance.replace(/,/g, '')),
-      Discount: parseFloat(discount),
-      PaidAmount: parseFloat(paidAmount),
-      RemainingAmount: parseFloat(remainingAmount),
-      Total: parseFloat(total),
-      CreatedAt: new Date().toISOString()
+        CustomerName: customer,
+        DueDate: dueDate,
+        ExpectedDate: expectedDate,
+        TermDays: termDays,
+        Documents: documents,
+        VisaType: visaType,
+        Notes: notes,
+        ConsultancyFee: parseFloat(consultancyFee),
+        RegistrationFee: parseFloat(registrationFee),
+        ApplicationForm: parseFloat(applicationForm),
+        HotelBooking: parseFloat(hotelBooking),
+        TravelInsurance: parseFloat(travelInsurance),
+        Appointment: parseFloat(appointment),
+        Tickets: parseInt(ticket),
+        PaidBy: paidBy,
+        PaidTo: `${firstName} ${lastName}`,
+        Balance: parseFloat(balance.replace(/,/g, '')),
+        Discount: parseFloat(discount),
+        PaidAmount: parseFloat(paidAmount),
+        RemainingAmount: parseFloat(remainingAmount),
+        Total: parseFloat(total),
+        CreatedAt: new Date().toISOString(),
+        PassportNo: passportno,
+        PassportIssueDate: issuedate,
+        PassportExpiryDate: expirydate
+        
     };
-  
+
     axios.post('http://localhost/Visa/api/Customer/post', formData, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
     .then(response => {
-      console.log('Form saved successfully:', response.data);
-      setSuccessMessage('Form saved successfully!');
-      setCustomer('');
-      setDueDate('2024-06-26');
-      setTermDays(0);
-      setExpectedDate('2024-07-26');
-      setBalance('0');
-      setDiscount('0');
-      setPaidAmount('0');
-      setPaidBy('');
-      setVisaType('Study Visa');
-      setNotes('');
-      setConsultancyFee('0');
-      setRegistrationFee('0');
-      setApplicationForm('0');
-      setHotelBooking('0');
-      setTravelInsurance('0');
-      setAppointment('0');
-      setTicket('0');
-      setRemainingAmount('0');
-      setTotal('0');
-      setFirstName(`${firstName}`);
-      setDocuments('');
-      setLastName(`${lastName}`);
+        console.log('Form saved successfully:', response.data);
+        setSuccessMessage('Form saved successfully!');
+        // Clear form fields
+        setCustomer('');
+        setDueDate('');
+        setTermDays(0);
+        setExpectedDate('');
+        setBalance('0');
+        setDiscount('0');
+        setPaidAmount('0');
+        setPaidBy('');
+        setVisaType('Study Visa');
+        setNotes('');
+        setConsultancyFee('0');
+        setRegistrationFee('0');
+        setApplicationForm('0');
+        setHotelBooking('0');
+        setTravelInsurance('0');
+        setAppointment('0');
+        setTicket('0');
+        setRemainingAmount('0');
+        setTotal('0');
+        setFirstName('');
+        setDocuments('');
+        setLastName('');
+        setPassportNo('');
+        setIssueDate('');
+        setExpiryDate('');
     })
     .catch(error => {
-      console.error('Error saving form:', error);
-      alert(`Error: ${error.message}`);
+        console.error('Error saving form:', error);
+        alert(`Error: ${error.message}`);
     });
-  };
+    incrementReceiptCount();
+};
   
   
 
@@ -201,9 +217,9 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   const handleConfirmClearList = () => {
     setCustomer('');
-    setDueDate('2024-06-26');
+    setDueDate('');
     setTermDays(0);
-    setExpectedDate('2024-07-26');
+    setExpectedDate('');
     setBalance('0');
     setDiscount('0');
     setPaidAmount('0');
@@ -220,6 +236,9 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     setRemainingAmount('0');
     setTotal('0');
     setDocuments('');
+    setPassportNo('');
+    setIssueDate('');
+    setExpiryDate('');
     setShowClearConfirmation(false);
   };
 
@@ -271,15 +290,15 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               <Nav.Link as={Link} to="/">Logout</Nav.Link>
             </Nav>
             <Nav className="ms-auto">
-              <Dropdown show={showDropdown} onToggle={toggleDropdown} align="end">
-                <Dropdown.Toggle as="a" className="nav-link text-white position-relative" onClick={toggleDropdown}>
-                  <FontAwesomeIcon icon={faBell} />
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {reminders.length}
-                    <span className="visually-hidden">unread notifications</span>
-                  </span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
+            <Dropdown show={showDropdown} onToggle={toggleDropdown} align="end">
+                            <Dropdown.Toggle as="a" className="nav-link text-white position-relative" onClick={toggleDropdown}>
+                              <FontAwesomeIcon icon={faBell} />
+                              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                               {receiptCount}
+                                <span className="visually-hidden">unread notifications</span>
+                                       </span>
+                                   </Dropdown.Toggle>
+                                <Dropdown.Menu>
                   <Dropdown.Header>Notifications</Dropdown.Header>
                   {reminders.map((reminder) => (
                     <Dropdown.Item key={reminder.Id}>
@@ -323,7 +342,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
           Customer Form for Admin
         </h1>
         <Form>
-          <Row className="mb-3">
+        <Row className="mb-3">
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Customer Name</Form.Label>
@@ -491,6 +510,39 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             </Col>
           </Row>
 
+          <Row className="mb-3">
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Passport no</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={passportno}
+                  onChange={(e) => setPassportNo(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Issue Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={issuedate}
+                  onChange={(e) => setIssueDate(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Expiry Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={expirydate}
+                  onChange={(e) => setExpiryDate(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
           <Row className="mb-2">
             <Col>
               <Form.Group>
@@ -514,6 +566,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               </Form.Group>
             </Col>
           </Row>
+
 
           <div className="box-container">
             <Row className="mb-3">

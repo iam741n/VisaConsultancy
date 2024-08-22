@@ -36,53 +36,69 @@ const UpdateCustomerForm = () => {
   const [total, setTotal] = useState('');
   const [customerId, setCustomerId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [passportno, setPassportNo] = useState('');  // Use useState instead of useEffect
+  const [issuedate, setIssueDate] = useState('');    // Use useState instead of useEffect
+  const [expirydate, setExpiryDate] = useState('');  // Use useState instead of useEffect
+  const [monthsremaining, setMonthsremaining]= useState('');
 
   useEffect(() => {
     const fetchCustomers = async () => {
-      try {
-        const response = await axios.get('http://localhost/Visa/api/Customer/GetAllCustomers');
-        setCustomerData(response.data);
-      } catch (error) {
-        console.error('Error fetching customer data:', error);
-      }
+        try {
+            const response = await axios.get('http://localhost/Visa/api/Customer/GetAllCustomers');
+            setCustomerData(response.data);
+        } catch (error) {
+            console.error('Error fetching customer data:', error);
+        }
     };
 
     fetchCustomers();
-  }, []);
+}, []);
 
-  useEffect(() => {
+useEffect(() => {
     if (selectedCustomer) {
-      const customer = customerData.find(c => c.customer_name === selectedCustomer);
-      if (customer) {
-        // Convert backend date format to YYYY-MM-DD
-        const formatDate = (dateStr) => {
-          return new Date(dateStr).toISOString().split('T')[0];
-        };
-  
-        setDueDate(formatDate(customer.due_date));
-        setCustomerId(customer.id);
-        setExpectedDate(formatDate(customer.expected_date));
-        setVisaType(customer.visa_type);
-        setTermDays(customer.term_days);
-        setBalance(customer.balance);
-        setPaidBy(customer.paid_by);
-        setPaidTo(customer.paid_to);
-        setConsultancyFee(customer.consultancy_fee);
-        setRegistrationFee(customer.registration_fee);
-        setTicket(customer.tickets);
-        setHotelBooking(customer.hotel_booking);
-        setApplicationForm(customer.application_form);
-        setTravelInsurance(customer.travel_insurance);
-        setAppointment(customer.appointment);
-        setNotes(customer.notes);
-        setDocuments(customer.documents);
-        setDiscount(customer.discount);
-        setPaidAmount(customer.paid_amount);
-        setRemainingAmount(customer.remaining_amount);
-        setTotal(customer.total);
-      }
+        const customer = customerData.find(c => c.customer_name === selectedCustomer);
+        if (customer) {
+            // Debugging output
+            console.log("Fetched customer data:", customer);
+
+            // Convert backend date format to YYYY-MM-DD
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                console.log("Parsed date:", date); // Debugging output
+                return date.toISOString().split('T')[0];
+            };
+
+            // Debugging output
+          
+            setDueDate(formatDate(customer.due_date));
+            setCustomerId(customer.id);
+            setExpectedDate(formatDate(customer.expected_date));
+            setVisaType(customer.visa_type);
+            setTermDays(customer.term_days);
+            setBalance(customer.balance);
+            setPaidBy(customer.paid_by);
+            setPaidTo(customer.paid_to);
+            setConsultancyFee(customer.consultancy_fee);
+            setRegistrationFee(customer.registration_fee);
+            setTicket(customer.tickets);
+            setHotelBooking(customer.hotel_booking);
+            setApplicationForm(customer.application_form);
+            setTravelInsurance(customer.travel_insurance);
+            setAppointment(customer.appointment);
+            setNotes(customer.notes);
+            setDocuments(customer.documents);
+            setDiscount(customer.discount);
+            setPaidAmount(customer.paid_amount);
+            setRemainingAmount(customer.remaining_amount);
+            setTotal(customer.total);
+            setPassportNo(customer.passport_no);
+            setIssueDate(formatDate(customer.passport_issue_date)); // Use formatDate function
+            setExpiryDate(formatDate(customer.passport_expiry_date)); // Use formatDate function
+            setMonthsremaining(customer.months_remaining);
+        }
     }
-  }, [selectedCustomer, customerData]);
+}, [selectedCustomer, customerData]);
+
   
 
   useEffect(() => {
@@ -113,13 +129,19 @@ const UpdateCustomerForm = () => {
     }
   }, [balance, discount, paidAmount]);
   
+
+  const incrementReceiptCount = () => {
+    setReceiptCount(prevCount => prevCount + 1);
+  };
+
+
   const handleSaveForm = async () => {
     // Validate required fields
     if (!selectedCustomer || !dueDate || !expectedDate || !paidBy || !paidTo || !visaType) {
       setErrorMessage("Please fill in all required fields.");
       return;
     }
-  
+
     try {
       const updatedCustomer = {
         CustomerName: selectedCustomer,
@@ -143,17 +165,20 @@ const UpdateCustomerForm = () => {
         PaidAmount: parseFloat(paidAmount),
         RemainingAmount: parseFloat(remainingAmount),
         Total: parseFloat(total),
-        CreatedAt: new Date().toISOString()
+        CreatedAt: new Date().toISOString(),
+        PassportNo: passportno, // New field
+        PassportIssueDate: new Date(issuedate).toISOString(), // New field
+        PassportExpiryDate: new Date(expirydate).toISOString() // New field
       };
-  
+
       console.log("Request Data:", updatedCustomer);
-  
+
       const response = await axios.put(`http://localhost/Visa/api/customer/UpdateCustomer/${customerId}`, updatedCustomer, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (response.status === 200) {
         setSuccessMessage("Customer data updated successfully!");
         console.log("Customer data updated successfully!");
@@ -170,17 +195,8 @@ const UpdateCustomerForm = () => {
         setErrorMessage("An unknown error occurred.");
       }
     }
-  };
-  
-  
-  
-    
-
-
-
-
-  
-  
+    incrementReceiptCount();
+};
 
   const handleClearForm = () => {
     setShowClearConfirmation(true);
@@ -208,6 +224,9 @@ const UpdateCustomerForm = () => {
     setPaidAmount('');
     setRemainingAmount('');
     setTotal('');
+    setPassportNo('');
+    setIssueDate('');
+    setExpiryDate('');
     setShowClearConfirmation(false);
   };
 
@@ -460,6 +479,56 @@ const UpdateCustomerForm = () => {
               />
             </Form.Group>
           </Col>
+        </Row>
+        <Row>
+        <Col>
+          <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Passport no</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder='Enter Passport number'
+                  value={passportno}
+                  onChange={(e) => setPassportNo(e.target.value)}
+                />
+              </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Issue Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={issuedate}
+                onChange={(e) => setIssueDate(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Expiry Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={expirydate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Months remaining</Form.Label>
+              <Form.Control
+               type="number"
+               value={monthsremaining}
+               onChange={(e) => setMonthsremaining(e.target.value)}
+               disabled
+                    style={{ 
+                       backgroundColor: monthsremaining <= 9 ? '#F88379' : '', // Red background if 9 or less
+                       borderColor: monthsremaining <= 9 ? '#8B0000' : '', // Red border if 9 or less
+                      color: monthsremaining <= 9 ? '#721c24' : '' // Dark red text if 9 or less
+                            }}
+                             />
+                          </Form.Group>
+          </Col>
+       
         </Row>
 
         <Row>
