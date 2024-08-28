@@ -71,7 +71,7 @@ const DailyExpense = () => {
       {loading ? (
         <p>Loading...</p>
       ) : expenses.length === 0 ? (
-        <p>No expenses happened today.</p>
+        <p style="font-weight: bold; color: white;">No expenses happened today.</p>
       ) : (
         <div className="row">
           {expenses.map((expense) => (

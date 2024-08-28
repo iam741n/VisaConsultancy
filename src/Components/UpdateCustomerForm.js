@@ -11,6 +11,7 @@ const UpdateCustomerForm = () => {
   const { userData } = location.state || {};
   const [customerData, setCustomerData] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showClearConfirmation, setShowClearConfirmation] = useState(false);
   const [receiptCount, setReceiptCount] = useState(1);
@@ -249,6 +250,8 @@ useEffect(() => {
     }
   };
 
+  const handleCustomerSelect = (e) => setSelectedCustomer(e.target.value);
+
   return (
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -298,16 +301,14 @@ useEffect(() => {
 
         <Row className="mb-3">
           <Col>
-            <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Customer Name</Form.Label>
-              <Form.Control
-                as="select"
-                value={selectedCustomer}
-                onChange={(e) => setSelectedCustomer(e.target.value)}
-              >
-                <option value="">Select Customer</option>
-                {customerData.map((customer, index) => (
-                  <option key={index} value={customer.customer_name}>{customer.customer_name}</option>
+          <Form.Group controlId="customerSelect">
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Select Customer</Form.Label>
+              <Form.Control as="select" value={selectedCustomer} onChange={handleCustomerSelect}>
+                <option value="">Select a customer</option>
+                {customerData.map((customer) => (
+                  <option key={customer.customer_name} value={customer.customer_name}>
+                    {customer.customer_name}
+                  </option>
                 ))}
               </Form.Control>
             </Form.Group>

@@ -13,7 +13,7 @@ const AllExpense = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await axios.get(`http://localhost/Visa/api/Expense/Expensebycurrentdate`);
+        const response = await axios.get(`http://localhost/Visa/api/Expense/GetAllExpenses`);
         if (Array.isArray(response.data)) {
           setExpenses(response.data);
         } else {
@@ -71,7 +71,7 @@ const AllExpense = () => {
       {loading ? (
         <p>Loading...</p>
       ) : expenses.length === 0 ? (
-        <p>No expenses happened today.</p>
+        <p style="font-weight: bold; color: white;">No expenses happened.</p>
       ) : (
         <div className="row">
           {expenses.map((expense) => (

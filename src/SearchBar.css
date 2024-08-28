@@ -40,7 +40,7 @@
 
 .box:hover input {
     width: 350px;
-    background: #3b3640;
+    background: #d4d3d4;
     border-radius: 10px;
 }
 
@@ -53,6 +53,13 @@
     color: white;
     transition: .2s;
 }
+
+.all-customers-container .highlighted-customer {
+    background-color: #ffcccc; /* Light red background for highlighted customers */
+  }
+  
+  
+  
 
 @media (max-width: 768px) {
     .input {
