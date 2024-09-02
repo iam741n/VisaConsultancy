@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button,Nav, NavDropdown,Navbar, Form, Alert } from 'react-bootstrap';
+import { Container,Nav, NavDropdown,Navbar } from 'react-bootstrap';
 import axios from 'axios';
 import { Link ,useLocation} from 'react-router-dom';
 
@@ -71,7 +71,8 @@ const DailyExpense = () => {
       {loading ? (
         <p>Loading...</p>
       ) : expenses.length === 0 ? (
-        <p style="font-weight: bold; color: white;">No expenses happened today.</p>
+        <p style={{ fontWeight: 'bold', color: 'white' }}>No expenses happened today.</p>
+
       ) : (
         <div className="row">
           {expenses.map((expense) => (
