@@ -19,7 +19,7 @@ const ViewReminderEmpolyee = () => {
 
   const fetchReminders = async () => {
     try {
-      const response = await axios.get('http://localhost/Visa/api/Reminder/GetReminders');
+      const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/GetReminders');
       setReminders(response.data);
     } catch (error) {
       console.error('Error fetching reminders:', error);
@@ -28,7 +28,7 @@ const ViewReminderEmpolyee = () => {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost/Visa/api/Reminder/PutReminder/${selectedReminder.Id}`, selectedReminder);
+      await axios.put(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/PutReminder/${selectedReminder.Id}`, selectedReminder);
       fetchReminders(); // Refresh reminders after update
       setShowUpdateModal(false);
       setShowUpdateSuccess(true); // Show success alert
@@ -40,7 +40,7 @@ const ViewReminderEmpolyee = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost/Visa/api/Reminder/DeleteReminder/${selectedReminder.Id}`);
+      await axios.delete(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/DeleteReminder/${selectedReminder.Id}`);
       fetchReminders(); // Refresh reminders after delete
       setShowDeleteModal(false);
       setShowDeleteSuccess(true); // Show success alert

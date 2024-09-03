@@ -15,7 +15,7 @@ function AllCustomers() {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost/Visa/api/Customer/GetCustomersHighlighted') // Replace with your actual endpoint
+    axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/GetCustomersHighlighted') // Replace with your actual endpoint
       .then(response => {
         setCustomers(response.data);
       })

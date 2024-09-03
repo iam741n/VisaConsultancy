@@ -50,7 +50,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchReminders = async () => {
         try {
-            const response = await axios.get('http://localhost/Visa/api/Reminder/GetReminders'); // Replace with your actual API endpoint
+            const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/GetReminders'); // Replace with your actual API endpoint
             setReminders(response.data);
         } catch (error) {
             console.error('Error fetching reminders:', error);
@@ -167,7 +167,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
         
     };
 
-    axios.post('http://localhost/Visa/api/Customer/post', formData, {
+    axios.post('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/post', formData, {
         headers: {
             'Content-Type': 'application/json'
         }

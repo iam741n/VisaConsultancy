@@ -21,7 +21,7 @@ const ManageEmployees = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost/Visa/api/user/GetAllUsers');
+      const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/user/GetAllUsers');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -30,7 +30,7 @@ const ManageEmployees = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost/Visa/api/user/DeleteUser/${selectedUser.uid}`);
+      await axios.delete(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/user/DeleteUser/${selectedUser.uid}`);
       fetchUsers(); // Refresh users after delete
       setShowDeleteModal(false);
       setShowDeleteSuccess(true); // Show success alert

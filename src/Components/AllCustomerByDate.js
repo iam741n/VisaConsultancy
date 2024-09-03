@@ -12,7 +12,7 @@ function AllCustomerByDate() {
   const [date, setDate] = useState('');
 
   const fetchCustomers = (selectedDate) => {
-    axios.get(`http://localhost/Visa/api/Customer/GetCustomersByDate?date=${selectedDate}`)
+    axios.get(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/GetCustomersByDate?date=${selectedDate}`)
       .then(response => {
         setCustomers(response.data);
       })

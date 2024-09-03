@@ -174,7 +174,7 @@ useEffect(() => {
 
       console.log("Request Data:", updatedCustomer);
 
-      const response = await axios.put(`http://localhost/Visa/api/customer/UpdateCustomer/${customerId}`, updatedCustomer, {
+      const response = await axios.put(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/customer/UpdateCustomer/${customerId}`, updatedCustomer, {
         headers: {
           'Content-Type': 'application/json'
         }

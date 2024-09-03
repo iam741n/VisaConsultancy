@@ -20,7 +20,7 @@ const DailyProgressChart = () => {
 
     const fetchDailyProgress = async () => {
         try {
-            const response = await axios.get('http://localhost/Visa/api/Progress/GetProgress');
+            const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Progress/GetProgress');
             const progressData = response.data;
             setDate(progressData.Date);
             setSales(progressData.SalesToday);

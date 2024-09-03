@@ -25,7 +25,7 @@ const UpdatePasswordEmpolyee = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost/Visa/api/User/UpdatePassword', {
+      const response = await axios.post('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/User/UpdatePassword', {
         Email: email,
         OldPassword: oldPassword,
         NewPassword: newPassword,

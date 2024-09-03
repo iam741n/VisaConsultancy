@@ -19,7 +19,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost/Visa/api/User/Login?Email=${encodeURIComponent(email)}&Password=${encodeURIComponent(password)}`, {
+      const response = await fetch(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/User/Login?Email=${encodeURIComponent(email)}&Password=${encodeURIComponent(password)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

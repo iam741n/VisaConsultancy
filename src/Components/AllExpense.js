@@ -13,7 +13,7 @@ const AllExpense = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await axios.get(`http://localhost/Visa/api/Expense/GetAllExpenses`);
+        const response = await axios.get(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Expense/GetAllExpenses`);
         if (Array.isArray(response.data)) {
           setExpenses(response.data);
         } else {

@@ -26,7 +26,7 @@ const CreateReminderEmployee = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost/Visa/api/Reminder/PostReminder', reminderData);
+      const response = await axios.post('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/PostReminder', reminderData);
       console.log('Reminder created:', response.data);
       setShowSuccessAlert(true);
       // Optionally, you can redirect or show a success message here

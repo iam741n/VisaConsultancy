@@ -14,7 +14,7 @@ const Expense = () => {
 
     const handleAddExpense = async () => {
         try {
-            const response = await axios.post('http://localhost/Visa/api/Expense/InsertExpense', {
+            const response = await axios.post('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Expense/InsertExpense', {
                 Title: title,
                 Amount: amount
             });

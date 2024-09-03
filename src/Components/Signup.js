@@ -24,7 +24,7 @@ const Signup = () => {
     e.preventDefault(); // Prevent default form submission
 
     try {
-      const response = await fetch('http://localhost/Visa/api/User/Signup', {
+      const response = await fetch('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/User/Signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

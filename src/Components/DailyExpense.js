@@ -13,7 +13,7 @@ const DailyExpense = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await axios.get(`http://localhost/Visa/api/Expense/Expensebycurrentdate`);
+        const response = await axios.get(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Expense/Expensebycurrentdate`);
         if (Array.isArray(response.data)) {
           setExpenses(response.data);
         } else {

@@ -67,7 +67,7 @@ const ProfitLossChart = () => {
 
   const fetchProgressForMultipleDays = async () => {
     try {
-      const response = await axios.get(`http://localhost/Visa/api/Progress/GetProgressforMultipledays?startDate=${startDate}&endDate=${endDate}`);
+      const response = await axios.get(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Progress/GetProgressforMultipledays?startDate=${startDate}&endDate=${endDate}`);
       const { Sales, Expense, Profit, Days, Date: dateRange } = response.data;
       console.log(response.data); // Log the response data
 
