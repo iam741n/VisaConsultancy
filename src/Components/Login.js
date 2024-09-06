@@ -40,10 +40,10 @@ const Login = () => {
       // Check the role from the API response
       if (data.role === 'Admin' || data.role === 'admin') {
         console.log("Welcome Admin:", data.firstName, data.lastName);
-        navigate('/AdminDashboard', { state: { userData: data } }); // Replace with your Admin dashboard route
+        navigate('/AdminHome', { state: { userData: data } }); // Replace with your Admin dashboard route
       } else if (data.role === 'Employee' || data.role === 'employee') {
         console.log("Welcome Employee:", data.firstName, data.lastName);
-        navigate('/Dashboard', { state: { userData: data } }); // Replace with your Employee dashboard route
+        navigate('/EmpolyeeHome', { state: { userData: data } }); // Replace with your Employee dashboard route
        
       } else {
         alert('Login failed: Unexpected user role');

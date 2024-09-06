@@ -23,6 +23,11 @@ import DailyProgressChart from './Components/DailyProgressChart';
 import ViewExpense from './Components/ViewExpense';
 import DailyExpense from './Components/DailyExpense';
 import AllExpense from './Components/AllExpense';
+import UpdateCustomerFormEmployee from './Components/UpdateCustomerFormEmployee';
+import EmpolyeeHome from './Components/EmployeeHome';
+import Dashboard2 from './Components/Dashboard2';
+import AdminHome from './Components/AdminHome';
+import AdminDashboard2 from './Components/AdminDashboard2';
 function App() {
   return (
     <Router>
@@ -48,6 +53,13 @@ function App() {
    <Route path="/ViewExpense" element={<ViewExpense/>} />
    <Route path="/DailyExpense" element={<DailyExpense/>} />
    <Route path="/AllExpense" element={<AllExpense/>} />
+   <Route path="/UpdateCustomerFormEmployee" element={<UpdateCustomerFormEmployee/>} />
+   <Route path="/EmpolyeeHome" element={<EmpolyeeHome/>} />
+   <Route path="/Dashboard2" element={<Dashboard2/>} />
+   <Route path="/AdminHome" element={<AdminHome/>} />
+   <Route path="/AdminDashboard2" element={<AdminDashboard2/>} />
+   
+
    
    </Routes>
    </Router>

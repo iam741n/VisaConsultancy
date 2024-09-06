@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Container, Navbar, Nav ,NavDropdown} from 'react-bootstrap';
 import { Link ,useLocation} from 'react-router-dom';
 
-function ViewExpense() {
+function AdminHome() {
     const location = useLocation();
     const { userData } = location.state || {};
     const buttonStyle = {
@@ -27,7 +27,7 @@ return(
   <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
        <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand as={Link} to="/AdminDashboard">Jay Visa</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/AdminDashboard">Jay Visa</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
@@ -37,6 +37,7 @@ return(
                 <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
               </NavDropdown>
               <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+            
               <Nav.Link as={Link} to="/UpdateCustomerForm">Update Customer Form</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
@@ -59,14 +60,14 @@ return(
 
     <Container>
         <div className="text-center mt-4">
-        <h1 className="text-center mt-4" style={{ color: 'White', fontFamily: 'Arial, sans-serif', fontSize: '2.5rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>View Expense</h1>
+        <h1 className="text-center mt-4" style={{ color: 'White', fontFamily: 'Arial, sans-serif', fontSize: '2.5rem', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Visa Forms</h1>
         </div>
 
         <div className="d-flex justify-content-center mt-5" style={buttonContainerMargin}>
           <div style={buttonContainerStyle}>
-            <Link to='/DailyExpense'>
+            <Link to='/AdminDashboard'>
               <Button variant="primary" style={buttonStyle}>
-                Today Expense
+               Study Visa
               </Button>
             </Link>
           </div>
@@ -74,9 +75,9 @@ return(
 
         <div className="d-flex justify-content-center mt-5" style={buttonContainerMargin}>
           <div style={buttonContainerStyle}>
-            <Link to='/AllExpense'>
+            <Link to='/AdminDashboard2'>
               <Button variant="primary" style={buttonStyle}>
-                All Expenses
+                Visit Visa
               </Button>
             </Link>
           </div>
@@ -89,4 +90,4 @@ return(
 );
 }
 
-export default ViewExpense;
+export default AdminHome;

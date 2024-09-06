@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 import axios from 'axios';
 import '../UpdateCustomerForm.css';
 
-const UpdateCustomerForm = () => {
+const UpdateCustomerFormEmployee = () => {
   const location = useLocation();
   const { userData } = location.state || {};
   const [customerData, setCustomerData] = useState([]);
@@ -259,31 +259,19 @@ useEffect(() => {
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-        <Navbar.Brand as={Link} to="/AdminHome">Jay Visa</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/AdminHome">Home</Nav.Link>
-                            <NavDropdown title="Client History" id="basic-nav-dropdown">
-                                <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
-                            <Nav.Link as={Link} to="/UpdateCustomerForm">Update Customer Form</Nav.Link>
-                            <NavDropdown title="Settings" id="basic-nav-dropdown">
-                                <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
-                            </NavDropdown>
-                            <NavDropdown title="Expense" id="basic-nav-dropdown">
-                                <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
-                            </NavDropdown>
-                            <NavDropdown title="Progress" id="basic-nav-dropdown">
-                                <NavDropdown.Item as={Link} to='/DailyProgressChart'>Today Progress</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/ProfitLossChart">Multiple days Progress</NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link as={Link} to="/">Logout</Nav.Link>
+        <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+            <Nav.Link href="/EmpolyeeHome">Home</Nav.Link>
+                <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
+                <Nav.Link href="/UpdateCustomerFormEmployee">Client Payments</Nav.Link>
+              <NavDropdown title="Settings" id="basic-nav-dropdown">
+                <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
+                <Link to='/CreateReminderEmployee' className="dropdown-item">Create Reminder</Link>
+                
+              </NavDropdown>
+              <Nav.Link href="/">Logout</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -367,9 +355,21 @@ useEffect(() => {
               />
             </Form.Group>
           </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Balance"
+                value={balance}
+                onChange={(e) => setBalance(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
         </Row>
 
-        <Row>
+
+        {/* <Row>
           <Col>
             <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Due Date</Form.Label>
@@ -567,7 +567,7 @@ useEffect(() => {
         <Row>
           <Col>
             <Form.Group>
-            <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Phone no</Form.Label>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Notes</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -579,7 +579,7 @@ useEffect(() => {
           </Col>
           <Col>
             <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Address</Form.Label>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Documents</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -589,7 +589,7 @@ useEffect(() => {
               />
             </Form.Group>
           </Col>
-        </Row>
+        </Row> */}
 
           <div className="box-container">
             <Row className="mb-3">
@@ -720,4 +720,4 @@ useEffect(() => {
   );
 };
 
-export default UpdateCustomerForm;
+export default UpdateCustomerFormEmployee;

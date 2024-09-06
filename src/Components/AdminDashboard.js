@@ -15,13 +15,14 @@ const AdminDashboard = () => {
   const userData = location.state?.userData;
   const [receiptCount, setReceiptCount] = useState(1);
   const [customer, setCustomer] = useState('');
-  const [dueDate, setDueDate] = useState('2024-06-26');
+  const [dueDate, setDueDate] = useState('');
   const [termDays, setTermDays] = useState(0);
-  const [expectedDate, setExpectedDate] = useState('2024-07-26');
+  const [expectedDate, setExpectedDate] = useState('');
   const [balance, setBalance] = useState('195,000');
   const [discount, setDiscount] = useState('0');
   const [paidAmount, setPaidAmount] = useState('0');
   const [paidBy, setPaidBy] = useState('');
+  const [paidTo, setPaidTo] = useState('');
   const [visaType, setVisaType] = useState('Study Visa');
   const [notes, setNotes] = useState('');
   const [consultancyFee, setConsultancyFee] = useState('0');
@@ -46,7 +47,9 @@ const AdminDashboard = () => {
   const [passportno, setPassportNo] = useState('');  // Use useState instead of useEffect
   const [issuedate, setIssueDate] = useState('');    // Use useState instead of useEffect
   const [expirydate, setExpiryDate] = useState('');  // Use useState instead of useEffect
+  const [monthsremaining, setMonthsremaining]= useState('');
 
+  
   useEffect(() => {
     const fetchReminders = async () => {
         try {
@@ -59,6 +62,50 @@ const AdminDashboard = () => {
 
     fetchReminders();
 }, []);
+
+useEffect(() => {
+  // Function to calculate and update balance
+  const calculateBalance = () => {
+    const consultancy = parseFloat(consultancyFee) || 0;
+    const registration = parseFloat(registrationFee) || 0;
+    const hotel = parseFloat(hotelBooking) || 0;
+    const application = parseFloat(applicationForm) || 0;
+    const insurance = parseFloat(travelInsurance) || 0;
+    const app = parseFloat(appointment) || 0;
+
+    // Calculate total fees
+    const totalFees = consultancy + registration + hotel + application + insurance + app;
+    
+    // Update balance state
+    setBalance(totalFees.toFixed(2));
+  };
+
+  // Recalculate balance when any fee changes
+  calculateBalance();
+}, [consultancyFee, registrationFee, hotelBooking, applicationForm, travelInsurance, appointment]);
+
+useEffect(() => {
+  if (issuedate && expirydate) {
+    const issue = new Date(issuedate);
+    const expiry = new Date(expirydate);
+    
+    const months =
+      (expiry.getFullYear() - issue.getFullYear()) * 12 +
+      (expiry.getMonth() - issue.getMonth());
+
+    setMonthsremaining(months); // Fixed variable name
+  }
+}, [issuedate, expirydate]);
+
+// Conditional styling for the months remaining field
+const getMonthsRemainingStyle = () => {
+  if (monthsremaining <= 9) { // Fixed variable name
+    return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' }; // Not good to go
+  } else if (monthsremaining > 9) { // Fixed variable name
+    return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' }; // Good to go
+  }
+  return {}; // Default styling
+};
 
 // Check if any reminder matches the current time
 useEffect(() => {
@@ -154,7 +201,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
         Appointment: parseFloat(appointment),
         Tickets: parseInt(ticket),
         PaidBy: paidBy,
-        PaidTo: `${firstName} ${lastName}`,
+        PaidTo: paidTo,
         Balance: parseFloat(balance.replace(/,/g, '')),
         Discount: parseFloat(discount),
         PaidAmount: parseFloat(paidAmount),
@@ -201,6 +248,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
         setPassportNo('');
         setIssueDate('');
         setExpiryDate('');
+        setPaidTo('');
     })
     .catch(error => {
         console.error('Error saving form:', error);
@@ -208,6 +256,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     });
     incrementReceiptCount();
 };
+
   
   
 
@@ -240,6 +289,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     setIssueDate('');
     setExpiryDate('');
     setShowClearConfirmation(false);
+    setPaidTo('');
   };
 
   const handleCancelClearList = () => {
@@ -256,7 +306,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
         pdf.save('receipt.pdf');
       });
   };
-
   return (
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
@@ -266,7 +315,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link as={Link} to="/AdminDashboard">Home</Nav.Link>
+            <Nav.Link as={Link} to="/AdminHome">Home</Nav.Link>
               <NavDropdown title="Client History" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
@@ -339,10 +388,10 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             fontWeight: 'bold'
           }}
         >
-          Customer Form for Admin
+          Customer Form for Admin for Study Visa
         </h1>
         <Form>
-        <Row className="mb-3">
+          <Row className="mb-3">
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Customer Name</Form.Label>
@@ -372,7 +421,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   onChange={(e) => setVisaType(e.target.value)}
                 >
                   <option>Study Visa</option>
-                  <option>Visit Visa</option>
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -401,19 +449,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             </Col>
             <Col>
               <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={balance}
-                  onChange={(e) => setBalance(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid by</Form.Label>
                 <Form.Control
                   type="text"
@@ -422,17 +457,46 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
-            <Col>
+           
+           
+          </Row>
+          <Row className="mb-2">
+          <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid to</Form.Label>
                 <Form.Control
                   type="text"
-                  value={`${firstName} ${lastName}`}
-                  readOnly
+                  value={paidTo}
+                  onChange={(e) => setPaidTo(e.target.value)}
                 />
               </Form.Group>
             </Col>
             <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Phone No</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Address</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={documents}
+                  onChange={(e) => setDocuments(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+          
+        <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Consultancy Fee</Form.Label>
                 <Form.Control
@@ -442,9 +506,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
-          </Row>
-
-          <Row className="mb-3">
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
@@ -452,16 +513,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   type="text"
                   value={registrationFee}
                   onChange={(e) => setRegistrationFee(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -475,9 +526,23 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
+           
           </Row>
 
           <Row className="mb-3">
+          
+            {/* <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value)}
+                />
+              </Form.Group>
+            </Col> */}
+          
+
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Application Form</Form.Label>
@@ -485,6 +550,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   type="text"
                   value={applicationForm}
                   onChange={(e) => setApplicationForm(e.target.value)}
+            
                 />
               </Form.Group>
             </Col>
@@ -498,7 +564,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
-            <Col>
+            {/* <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Appointment</Form.Label>
                 <Form.Control
@@ -507,8 +573,19 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   onChange={(e) => setAppointment(e.target.value)}
                 />
               </Form.Group>
-            </Col>
+            </Col> */}
+            <Col>
+          <Form.Group>
+            <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
+            <Form.Control
+              type="text"
+              value={balance}
+              readOnly
+            />
+          </Form.Group>
+        </Col>
           </Row>
+          
 
           <Row className="mb-3">
             <Col>
@@ -541,32 +618,27 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
+            <Col>
+            <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Months remaining</Form.Label>
+              <Form.Control
+               type="number"
+               value={monthsremaining}
+               onChange={(e) => setMonthsremaining(e.target.value)}
+               disabled
+                    style={{ 
+                       backgroundColor: monthsremaining <= 9 ? '#F88379' : '', // Red background if 9 or less
+                       borderColor: monthsremaining <= 9 ? '#8B0000' : '', // Red border if 9 or less
+                      color: monthsremaining <= 9 ? '#721c24' : '' // Dark red text if 9 or less
+                            }}
+                             />
+                          </Form.Group>
+          </Col>
           </Row>
 
-          <Row className="mb-2">
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Notes</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Documents</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={documents}
-                  onChange={(e) => setDocuments(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+          
 
+          
 
           <div className="box-container">
             <Row className="mb-3">
@@ -661,9 +733,9 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             <div className="receipt-box">
               <div>CLIENT NAME: {customer}</div>
               <div>PAID BY: {paidBy}</div>
-              <div>PAID TO: {firstName} {lastName}</div>
+              <div>PAID TO: {paidTo}</div>
               <div>VISA TYPE: {visaType}</div>
-              <div>TICKET: {ticket}</div>
+              
             </div>
             <div className="receipt-box">
               <div>RECEIPT NO: {receiptCount}</div>
@@ -671,9 +743,8 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               <div>REGISTRATION FEE: {registrationFee}</div>
               <div>HOTEL BOOKING: {hotelBooking}</div>
               <div>APPLICATION FORM: {applicationForm}</div>
-              <div>TICKET: {ticket}</div>
               <div>TRAVEL INSURANCE: {travelInsurance}</div>
-              <div>APPOINTMENT: {appointment}</div>
+             
             </div>
           </div>
           <div className="receipt-summary">
@@ -708,5 +779,4 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     </div>
   );
 };
-
 export default AdminDashboard;

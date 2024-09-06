@@ -10,8 +10,8 @@ import AlarmModal from './AlarmModal'; // Import the AlarmModal component
 import { parseISO, format, isWithinInterval, addMinutes } from 'date-fns'; // Import date-fns functions
 import '../Dashboard.css';
 
-const Dashboard = () => {
-  const location = useLocation();
+const Dashboard2 = () => {
+    const location = useLocation();
   const userData = location.state?.userData;
   const [receiptCount, setReceiptCount] = useState(1);
   const [customer, setCustomer] = useState('');
@@ -23,7 +23,7 @@ const Dashboard = () => {
   const [paidAmount, setPaidAmount] = useState('0');
   const [paidBy, setPaidBy] = useState('');
   const [paidTo, setPaidTo] = useState('');
-  const [visaType, setVisaType] = useState('Study Visa');
+  const [visaType, setVisaType] = useState('Visit Visa');
   const [notes, setNotes] = useState('');
   const [consultancyFee, setConsultancyFee] = useState('0');
   const [registrationFee, setRegistrationFee] = useState('0');
@@ -311,11 +311,11 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-        <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
+          <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link href="/EmpolyeeHome">Home</Nav.Link>
+            <Nav.Link href="/EmpolyeeHome">Home</Nav.Link>
                 <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
                 <Nav.Link href="/UpdateCustomerFormEmployee">Client Payments</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
@@ -375,7 +375,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             fontWeight: 'bold'
           }}
         >
-          Customer Form for Empolyee for Study Visa
+          Customer Form for Empolyee for Visit Visa
         </h1>
         <Form>
           <Row className="mb-3">
@@ -407,7 +407,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   value={visaType}
                   onChange={(e) => setVisaType(e.target.value)}
                 >
-                  <option>Study Visa</option>
+                  <option>Visit Visa</option>
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -495,11 +495,11 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             </Col>
             <Col>
               <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
                 <Form.Control
-                  type="text"
-                  value={registrationFee}
-                  onChange={(e) => setRegistrationFee(e.target.value)}
+                  type="number"
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -518,29 +518,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
 
           <Row className="mb-3">
           
-            {/* <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
-                />
-              </Form.Group>
-            </Col> */}
-          
-
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Application Form</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={applicationForm}
-                  onChange={(e) => setApplicationForm(e.target.value)}
-            
-                />
-              </Form.Group>
-            </Col>
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Travel Insurance</Form.Label>
@@ -551,7 +528,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
-            {/* <Col>
+            <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Appointment</Form.Label>
                 <Form.Control
@@ -560,7 +537,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   onChange={(e) => setAppointment(e.target.value)}
                 />
               </Form.Group>
-            </Col> */}
+            </Col>
             <Col>
           <Form.Group>
             <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
@@ -722,16 +699,15 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               <div>PAID BY: {paidBy}</div>
               <div>PAID TO: {paidTo}</div>
               <div>VISA TYPE: {visaType}</div>
-              
+              <div>TICKET: {ticket}</div>
             </div>
             <div className="receipt-box">
               <div>RECEIPT NO: {receiptCount}</div>
               <div>CONSULTANCY FEE: {consultancyFee}</div>
-              <div>REGISTRATION FEE: {registrationFee}</div>
               <div>HOTEL BOOKING: {hotelBooking}</div>
-              <div>APPLICATION FORM: {applicationForm}</div>
+              <div>TICKET: {ticket}</div>
               <div>TRAVEL INSURANCE: {travelInsurance}</div>
-             
+              <div>APPOINTMENT: {appointment}</div>
             </div>
           </div>
           <div className="receipt-summary">
@@ -767,4 +743,4 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
   );
 };
 
-export default Dashboard;
+export default Dashboard2;

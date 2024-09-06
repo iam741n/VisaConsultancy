@@ -64,7 +64,7 @@ const UpdatePasswordAdmin = () => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/AdminDashboard">Home</Nav.Link>
+                            <Nav.Link as={Link} to="/AdminHome">Home</Nav.Link>
                             <NavDropdown title="Client History" id="basic-nav-dropdown">
                                 <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>

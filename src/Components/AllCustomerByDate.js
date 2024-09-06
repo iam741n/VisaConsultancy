@@ -42,7 +42,7 @@ function AllCustomerByDate() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/AdminDashboard">Home</Nav.Link>
+                            <Nav.Link as={Link} to="/AdminHome">Home</Nav.Link>
                             <NavDropdown title="Client History" id="basic-nav-dropdown">
                                 <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
@@ -120,14 +120,14 @@ function AllCustomerByDate() {
         <Modal.Body>
           {selectedCustomer && (
             <>
-              <p><strong>Id:</strong> {selectedCustomer.id}</p>
+              {/* <p><strong>Id:</strong> {selectedCustomer.id}</p> */}
               <p><strong>Client Name:</strong> {selectedCustomer.customer_name}</p>
               <p><strong>Visa Type:</strong> {selectedCustomer.visa_type}</p>
               <p><strong>Due Date:</strong> {new Date(selectedCustomer.due_date).toLocaleDateString()}</p>
               <p><strong>Expected Date:</strong> {new Date(selectedCustomer.expected_date).toLocaleDateString()}</p>
               <p><strong>Term Days:</strong> {selectedCustomer.term_days}</p>
-              <p><strong>Documents:</strong> {selectedCustomer.documents}</p>
-              <p><strong>Notes:</strong> {selectedCustomer.notes}</p>
+              <p><strong>Address:</strong> {selectedCustomer.documents}</p>
+              <p><strong>Phone no:</strong> {selectedCustomer.notes}</p>
               <p><strong>Consultancy Fee:</strong> {selectedCustomer.consultancy_fee}</p>
               <p><strong>Registration Fee:</strong> {selectedCustomer.registration_fee}</p>
               <p><strong>Application Form:</strong> {selectedCustomer.application_form}</p>

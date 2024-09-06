@@ -45,8 +45,9 @@ const CreateReminderEmployee = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <Nav.Link href="/Dashboard">Home</Nav.Link>
+            <Nav.Link href="/EmpolyeeHome">Home</Nav.Link>
                 <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
+                <Nav.Link href="/UpdateCustomerFormEmployee">Client Payments</Nav.Link>
               <NavDropdown title="Settings" id="basic-nav-dropdown">
                 <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
                 <Link to='/CreateReminderEmployee' className="dropdown-item">Create Reminder</Link>

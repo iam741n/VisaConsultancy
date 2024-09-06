@@ -10,323 +10,336 @@ import AlarmModal from './AlarmModal'; // Import the AlarmModal component
 import { parseISO, format, isWithinInterval, addMinutes } from 'date-fns'; // Import date-fns functions
 import '../Dashboard.css';
 
-const Dashboard = () => {
-  const location = useLocation();
-  const userData = location.state?.userData;
-  const [receiptCount, setReceiptCount] = useState(1);
-  const [customer, setCustomer] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [termDays, setTermDays] = useState(0);
-  const [expectedDate, setExpectedDate] = useState('');
-  const [balance, setBalance] = useState('195,000');
-  const [discount, setDiscount] = useState('0');
-  const [paidAmount, setPaidAmount] = useState('0');
-  const [paidBy, setPaidBy] = useState('');
-  const [paidTo, setPaidTo] = useState('');
-  const [visaType, setVisaType] = useState('Study Visa');
-  const [notes, setNotes] = useState('');
-  const [consultancyFee, setConsultancyFee] = useState('0');
-  const [registrationFee, setRegistrationFee] = useState('0');
-  const [applicationForm, setApplicationForm] = useState('0');
-  const [hotelBooking, setHotelBooking] = useState('0');
-  const [travelInsurance, setTravelInsurance] = useState('0');
-  const [appointment, setAppointment] = useState('0');
-  const [ticket, setTicket] = useState('0');
-  const [remainingAmount, setRemainingAmount] = useState('0');
-  const [total, setTotal] = useState('0');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [documents, setDocuments] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  // State for Clear Confirmation Modal
-  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [reminders, setReminders] = useState([]);
-  const [showAlarm, setShowAlarm] = useState(false);
-  const [currentReminder, setCurrentReminder] = useState(null);
-  const [passportno, setPassportNo] = useState('');  // Use useState instead of useEffect
-  const [issuedate, setIssueDate] = useState('');    // Use useState instead of useEffect
-  const [expirydate, setExpiryDate] = useState('');  // Use useState instead of useEffect
-  const [monthsremaining, setMonthsremaining]= useState('');
-
+const AdminDashboard2 = () => {
+    const location = useLocation();
+    const userData = location.state?.userData;
+    const [receiptCount, setReceiptCount] = useState(1);
+    const [customer, setCustomer] = useState('');
+    const [dueDate, setDueDate] = useState('');
+    const [termDays, setTermDays] = useState(0);
+    const [expectedDate, setExpectedDate] = useState('');
+    const [balance, setBalance] = useState('195,000');
+    const [discount, setDiscount] = useState('0');
+    const [paidAmount, setPaidAmount] = useState('0');
+    const [paidBy, setPaidBy] = useState('');
+    const [paidTo, setPaidTo] = useState('');
+    const [visaType, setVisaType] = useState('Visit Visa');
+    const [notes, setNotes] = useState('');
+    const [consultancyFee, setConsultancyFee] = useState('0');
+    const [registrationFee, setRegistrationFee] = useState('0');
+    const [applicationForm, setApplicationForm] = useState('0');
+    const [hotelBooking, setHotelBooking] = useState('0');
+    const [travelInsurance, setTravelInsurance] = useState('0');
+    const [appointment, setAppointment] = useState('0');
+    const [ticket, setTicket] = useState('0');
+    const [remainingAmount, setRemainingAmount] = useState('0');
+    const [total, setTotal] = useState('0');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [documents, setDocuments] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    // State for Clear Confirmation Modal
+    const [showClearConfirmation, setShowClearConfirmation] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [reminders, setReminders] = useState([]);
+    const [showAlarm, setShowAlarm] = useState(false);
+    const [currentReminder, setCurrentReminder] = useState(null);
+    const [passportno, setPassportNo] = useState('');  // Use useState instead of useEffect
+    const [issuedate, setIssueDate] = useState('');    // Use useState instead of useEffect
+    const [expirydate, setExpiryDate] = useState('');  // Use useState instead of useEffect
+    const [monthsremaining, setMonthsremaining]= useState('');
+  
+    
+    useEffect(() => {
+      const fetchReminders = async () => {
+          try {
+              const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/GetReminders'); // Replace with your actual API endpoint
+              setReminders(response.data);
+          } catch (error) {
+              console.error('Error fetching reminders:', error);
+          }
+      };
+  
+      fetchReminders();
+  }, []);
   
   useEffect(() => {
-    const fetchReminders = async () => {
-        try {
-            const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/GetReminders'); // Replace with your actual API endpoint
-            setReminders(response.data);
-        } catch (error) {
-            console.error('Error fetching reminders:', error);
-        }
+    // Function to calculate and update balance
+    const calculateBalance = () => {
+      const consultancy = parseFloat(consultancyFee) || 0;
+      const registration = parseFloat(registrationFee) || 0;
+      const hotel = parseFloat(hotelBooking) || 0;
+      const application = parseFloat(applicationForm) || 0;
+      const insurance = parseFloat(travelInsurance) || 0;
+      const app = parseFloat(appointment) || 0;
+  
+      // Calculate total fees
+      const totalFees = consultancy + registration + hotel + application + insurance + app;
+      
+      // Update balance state
+      setBalance(totalFees.toFixed(2));
     };
-
-    fetchReminders();
-}, []);
-
-useEffect(() => {
-  // Function to calculate and update balance
-  const calculateBalance = () => {
-    const consultancy = parseFloat(consultancyFee) || 0;
-    const registration = parseFloat(registrationFee) || 0;
-    const hotel = parseFloat(hotelBooking) || 0;
-    const application = parseFloat(applicationForm) || 0;
-    const insurance = parseFloat(travelInsurance) || 0;
-    const app = parseFloat(appointment) || 0;
-
-    // Calculate total fees
-    const totalFees = consultancy + registration + hotel + application + insurance + app;
-    
-    // Update balance state
-    setBalance(totalFees.toFixed(2));
-  };
-
-  // Recalculate balance when any fee changes
-  calculateBalance();
-}, [consultancyFee, registrationFee, hotelBooking, applicationForm, travelInsurance, appointment]);
-
-useEffect(() => {
-  if (issuedate && expirydate) {
-    const issue = new Date(issuedate);
-    const expiry = new Date(expirydate);
-    
-    const months =
-      (expiry.getFullYear() - issue.getFullYear()) * 12 +
-      (expiry.getMonth() - issue.getMonth());
-
-    setMonthsremaining(months); // Fixed variable name
-  }
-}, [issuedate, expirydate]);
-
-// Conditional styling for the months remaining field
-const getMonthsRemainingStyle = () => {
-  if (monthsremaining <= 9) { // Fixed variable name
-    return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' }; // Not good to go
-  } else if (monthsremaining > 9) { // Fixed variable name
-    return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' }; // Good to go
-  }
-  return {}; // Default styling
-};
-
-// Check if any reminder matches the current time
-useEffect(() => {
-  const checkReminders = () => {
-    const now = new Date();
-
-    reminders.forEach((reminder) => {
-      if (!reminder.Date || !reminder.Time) return;
-
-      // Split reminder.Date and reminder.Time to ensure correct format
-      const [year, month, day] = reminder.Date.split('-').map(num => parseInt(num, 10));
-      const [hours, minutes] = reminder.Time.split(':').map(num => parseInt(num, 10));
-
-      // Create a date object using parsed values
-      const reminderDateTime = new Date(year, month - 1, day, hours, minutes);
-
-      if (isNaN(reminderDateTime.getTime())) {
-        console.error('Invalid date/time:', reminder.Date, reminder.Time);
-        return;
-      }
-
-      // Check if the reminder's datetime matches the current datetime within a minute
-      const timeDifference = Math.abs(now.getTime() - reminderDateTime.getTime());
-      if (timeDifference < 60000) { // Check within a minute
-        setCurrentReminder(reminder);
-        setShowAlarm(true);
-        // Play alarm sound
-        new Audio('/alarm.mp3').play();
-      }
-    });
-  };
-
-  const interval = setInterval(checkReminders, 60000); // Check every minute
-  return () => clearInterval(interval); // Cleanup on unmount
-}, [reminders]);
-
-
-const handleSnooze = () => {
-  // Implement snooze functionality here
-  setShowAlarm(false);
-};
-
-const handleCloseAlarm = () => {
-  setShowAlarm(false);
-};
-
-const toggleDropdown = () => setShowDropdown(!showDropdown);
-
+  
+    // Recalculate balance when any fee changes
+    calculateBalance();
+  }, [consultancyFee, registrationFee, hotelBooking, applicationForm, travelInsurance, appointment]);
+  
   useEffect(() => {
-    const dueDateObj = new Date(dueDate);
-    const expectedDateObj = new Date(expectedDate);
-    const diffTime = Math.abs(expectedDateObj - dueDateObj);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    setTermDays(diffDays);
-  }, [dueDate, expectedDate]);
-
-  useEffect(() => {
-    const balanceNum = parseFloat(balance.replace(/,/g, '')) || 0;
-    const discountNum = parseFloat(discount) || 0;
-    const paidAmountNum = parseFloat(paidAmount) || 0;
-    const totalAmount = balanceNum - discountNum;
-    const remainingAmountNum = totalAmount - paidAmountNum;
-
-    setRemainingAmount(remainingAmountNum.toFixed(2));
-    setTotal(totalAmount.toFixed(2));
-  }, [balance, discount, paidAmount]);
-
-  useEffect(() => {
-    if (userData) {
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
+    if (issuedate && expirydate) {
+      const issue = new Date(issuedate);
+      const expiry = new Date(expirydate);
+      
+      const months =
+        (expiry.getFullYear() - issue.getFullYear()) * 12 +
+        (expiry.getMonth() - issue.getMonth());
+  
+      setMonthsremaining(months); // Fixed variable name
     }
-  }, [userData]);
-
-  const incrementReceiptCount = () => {
-    setReceiptCount(prevCount => prevCount + 1);
+  }, [issuedate, expirydate]);
+  
+  // Conditional styling for the months remaining field
+  const getMonthsRemainingStyle = () => {
+    if (monthsremaining <= 9) { // Fixed variable name
+      return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' }; // Not good to go
+    } else if (monthsremaining > 9) { // Fixed variable name
+      return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' }; // Good to go
+    }
+    return {}; // Default styling
   };
-
-  const handleSaveForm = () => {
-    const formData = {
-        CustomerName: customer,
-        DueDate: dueDate,
-        ExpectedDate: expectedDate,
-        TermDays: termDays,
-        Documents: documents,
-        VisaType: visaType,
-        Notes: notes,
-        ConsultancyFee: parseFloat(consultancyFee),
-        RegistrationFee: parseFloat(registrationFee),
-        ApplicationForm: parseFloat(applicationForm),
-        HotelBooking: parseFloat(hotelBooking),
-        TravelInsurance: parseFloat(travelInsurance),
-        Appointment: parseFloat(appointment),
-        Tickets: parseInt(ticket),
-        PaidBy: paidBy,
-        PaidTo: paidTo,
-        Balance: parseFloat(balance.replace(/,/g, '')),
-        Discount: parseFloat(discount),
-        PaidAmount: parseFloat(paidAmount),
-        RemainingAmount: parseFloat(remainingAmount),
-        Total: parseFloat(total),
-        CreatedAt: new Date().toISOString(),
-        PassportNo: passportno,
-        PassportIssueDate: issuedate,
-        PassportExpiryDate: expirydate
-        
-    };
-
-    axios.post('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/post', formData, {
-        headers: {
-            'Content-Type': 'application/json'
+  
+  // Check if any reminder matches the current time
+  useEffect(() => {
+    const checkReminders = () => {
+      const now = new Date();
+  
+      reminders.forEach((reminder) => {
+        if (!reminder.Date || !reminder.Time) return;
+  
+        // Split reminder.Date and reminder.Time to ensure correct format
+        const [year, month, day] = reminder.Date.split('-').map(num => parseInt(num, 10));
+        const [hours, minutes] = reminder.Time.split(':').map(num => parseInt(num, 10));
+  
+        // Create a date object using parsed values
+        const reminderDateTime = new Date(year, month - 1, day, hours, minutes);
+  
+        if (isNaN(reminderDateTime.getTime())) {
+          console.error('Invalid date/time:', reminder.Date, reminder.Time);
+          return;
         }
-    })
-    .then(response => {
-        console.log('Form saved successfully:', response.data);
-        setSuccessMessage('Form saved successfully!');
-        // Clear form fields
-        setCustomer('');
-        setDueDate('');
-        setTermDays(0);
-        setExpectedDate('');
-        setBalance('0');
-        setDiscount('0');
-        setPaidAmount('0');
-        setPaidBy('');
-        setVisaType('Study Visa');
-        setNotes('');
-        setConsultancyFee('0');
-        setRegistrationFee('0');
-        setApplicationForm('0');
-        setHotelBooking('0');
-        setTravelInsurance('0');
-        setAppointment('0');
-        setTicket('0');
-        setRemainingAmount('0');
-        setTotal('0');
-        setFirstName('');
-        setDocuments('');
-        setLastName('');
-        setPassportNo('');
-        setIssueDate('');
-        setExpiryDate('');
-        setPaidTo('');
-    })
-    .catch(error => {
-        console.error('Error saving form:', error);
-        alert(`Error: ${error.message}`);
-    });
-    incrementReceiptCount();
-};
-
   
-  
-
-  const handleClearForm = () => {
-    setShowClearConfirmation(true);
-  };
-
-  const handleConfirmClearList = () => {
-    setCustomer('');
-    setDueDate('');
-    setTermDays(0);
-    setExpectedDate('');
-    setBalance('0');
-    setDiscount('0');
-    setPaidAmount('0');
-    setPaidBy('');
-    setVisaType('');
-    setNotes('');
-    setConsultancyFee('');
-    setRegistrationFee('');
-    setApplicationForm('');
-    setHotelBooking('');
-    setTravelInsurance('');
-    setAppointment('');
-    setTicket('0');
-    setRemainingAmount('0');
-    setTotal('0');
-    setDocuments('');
-    setPassportNo('');
-    setIssueDate('');
-    setExpiryDate('');
-    setShowClearConfirmation(false);
-    setPaidTo('');
-  };
-
-  const handleCancelClearList = () => {
-    setShowClearConfirmation(false);
-  };
-
-  const handleGenerateReceipt = () => {
-    const input = document.getElementById('receipt'); // Assuming 'receipt' is the ID of your receipt container
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'PNG', 0, 0);
-        pdf.save('receipt.pdf');
+        // Check if the reminder's datetime matches the current datetime within a minute
+        const timeDifference = Math.abs(now.getTime() - reminderDateTime.getTime());
+        if (timeDifference < 60000) { // Check within a minute
+          setCurrentReminder(reminder);
+          setShowAlarm(true);
+          // Play alarm sound
+          new Audio('/alarm.mp3').play();
+        }
       });
+    };
+  
+    const interval = setInterval(checkReminders, 60000); // Check every minute
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [reminders]);
+  
+  
+  const handleSnooze = () => {
+    // Implement snooze functionality here
+    setShowAlarm(false);
   };
-
+  
+  const handleCloseAlarm = () => {
+    setShowAlarm(false);
+  };
+  
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+  
+    useEffect(() => {
+      const dueDateObj = new Date(dueDate);
+      const expectedDateObj = new Date(expectedDate);
+      const diffTime = Math.abs(expectedDateObj - dueDateObj);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setTermDays(diffDays);
+    }, [dueDate, expectedDate]);
+  
+    useEffect(() => {
+      const balanceNum = parseFloat(balance.replace(/,/g, '')) || 0;
+      const discountNum = parseFloat(discount) || 0;
+      const paidAmountNum = parseFloat(paidAmount) || 0;
+      const totalAmount = balanceNum - discountNum;
+      const remainingAmountNum = totalAmount - paidAmountNum;
+  
+      setRemainingAmount(remainingAmountNum.toFixed(2));
+      setTotal(totalAmount.toFixed(2));
+    }, [balance, discount, paidAmount]);
+  
+    useEffect(() => {
+      if (userData) {
+        setFirstName(userData.firstName);
+        setLastName(userData.lastName);
+      }
+    }, [userData]);
+  
+    const incrementReceiptCount = () => {
+      setReceiptCount(prevCount => prevCount + 1);
+    };
+  
+    const handleSaveForm = () => {
+      const formData = {
+          CustomerName: customer,
+          DueDate: dueDate,
+          ExpectedDate: expectedDate,
+          TermDays: termDays,
+          Documents: documents,
+          VisaType: visaType,
+          Notes: notes,
+          ConsultancyFee: parseFloat(consultancyFee),
+          RegistrationFee: parseFloat(registrationFee),
+          ApplicationForm: parseFloat(applicationForm),
+          HotelBooking: parseFloat(hotelBooking),
+          TravelInsurance: parseFloat(travelInsurance),
+          Appointment: parseFloat(appointment),
+          Tickets: parseInt(ticket),
+          PaidBy: paidBy,
+          PaidTo: paidTo,
+          Balance: parseFloat(balance.replace(/,/g, '')),
+          Discount: parseFloat(discount),
+          PaidAmount: parseFloat(paidAmount),
+          RemainingAmount: parseFloat(remainingAmount),
+          Total: parseFloat(total),
+          CreatedAt: new Date().toISOString(),
+          PassportNo: passportno,
+          PassportIssueDate: issuedate,
+          PassportExpiryDate: expirydate
+          
+      };
+  
+      axios.post('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/post', formData, {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => {
+          console.log('Form saved successfully:', response.data);
+          setSuccessMessage('Form saved successfully!');
+          // Clear form fields
+          setCustomer('');
+          setDueDate('');
+          setTermDays(0);
+          setExpectedDate('');
+          setBalance('0');
+          setDiscount('0');
+          setPaidAmount('0');
+          setPaidBy('');
+          setVisaType('Study Visa');
+          setNotes('');
+          setConsultancyFee('0');
+          setRegistrationFee('0');
+          setApplicationForm('0');
+          setHotelBooking('0');
+          setTravelInsurance('0');
+          setAppointment('0');
+          setTicket('0');
+          setRemainingAmount('0');
+          setTotal('0');
+          setFirstName('');
+          setDocuments('');
+          setLastName('');
+          setPassportNo('');
+          setIssueDate('');
+          setExpiryDate('');
+          setPaidTo('');
+      })
+      .catch(error => {
+          console.error('Error saving form:', error);
+          alert(`Error: ${error.message}`);
+      });
+      incrementReceiptCount();
+  };
+  
+    
+    
+  
+    const handleClearForm = () => {
+      setShowClearConfirmation(true);
+    };
+  
+    const handleConfirmClearList = () => {
+      setCustomer('');
+      setDueDate('');
+      setTermDays(0);
+      setExpectedDate('');
+      setBalance('0');
+      setDiscount('0');
+      setPaidAmount('0');
+      setPaidBy('');
+      setVisaType('');
+      setNotes('');
+      setConsultancyFee('');
+      setRegistrationFee('');
+      setApplicationForm('');
+      setHotelBooking('');
+      setTravelInsurance('');
+      setAppointment('');
+      setTicket('0');
+      setRemainingAmount('0');
+      setTotal('0');
+      setDocuments('');
+      setPassportNo('');
+      setIssueDate('');
+      setExpiryDate('');
+      setShowClearConfirmation(false);
+      setPaidTo('');
+    };
+  
+    const handleCancelClearList = () => {
+      setShowClearConfirmation(false);
+    };
+  
+    const handleGenerateReceipt = () => {
+      const input = document.getElementById('receipt'); // Assuming 'receipt' is the ID of your receipt container
+      html2canvas(input)
+        .then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
+          pdf.addImage(imgData, 'PNG', 0, 0);
+          pdf.save('receipt.pdf');
+        });
+    };
   return (
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-        <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/AdminDashboard">Jay Visa</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="/EmpolyeeHome">Home</Nav.Link>
-                <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
-                <Nav.Link href="/UpdateCustomerFormEmployee">Client Payments</Nav.Link>
-              <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
-                <Link to='/CreateReminderEmployee' className="dropdown-item">Create Reminder</Link>
-                
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/AdminHome">Home</Nav.Link>
+              <NavDropdown title="Client History" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link href="/">Logout</Nav.Link>
+              <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+            
+              <Nav.Link as={Link} to="/UpdateCustomerForm">Update Customer Form</Nav.Link>
+              <NavDropdown title="Settings" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Expense" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Progress" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to='/DailyProgressChart'>Today Progress</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/ProfitLossChart">Multiple days Progress</NavDropdown.Item>
+              </NavDropdown>
+              <Nav.Link as={Link} to="/">Logout</Nav.Link>
             </Nav>
             <Nav className="ms-auto">
-                            <Dropdown show={showDropdown} onToggle={toggleDropdown} align="end">
+            <Dropdown show={showDropdown} onToggle={toggleDropdown} align="end">
                             <Dropdown.Toggle as="a" className="nav-link text-white position-relative" onClick={toggleDropdown}>
                               <FontAwesomeIcon icon={faBell} />
                               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -356,11 +369,11 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   ))}
                   <Dropdown.Divider />
                   <Dropdown.Item className="text-center text-primary">
-                    <Link to="/ViewReminderEmpolyee" className="text-primary text-decoration-none">View All</Link>
+                    <Link to="/ViewReminder" className="text-primary text-decoration-none">View All</Link>
                   </Dropdown.Item>
                 </Dropdown.Menu>
-                            </Dropdown>
-                        </Nav>
+              </Dropdown>
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -375,7 +388,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             fontWeight: 'bold'
           }}
         >
-          Customer Form for Empolyee for Study Visa
+          Customer Form for Admin for Visit Visa
         </h1>
         <Form>
           <Row className="mb-3">
@@ -407,7 +420,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   value={visaType}
                   onChange={(e) => setVisaType(e.target.value)}
                 >
-                  <option>Study Visa</option>
+                  <option>Visit Visa</option>
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -495,11 +508,11 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             </Col>
             <Col>
               <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
                 <Form.Control
-                  type="text"
-                  value={registrationFee}
-                  onChange={(e) => setRegistrationFee(e.target.value)}
+                  type="number"
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -518,29 +531,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
 
           <Row className="mb-3">
           
-            {/* <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
-                />
-              </Form.Group>
-            </Col> */}
-          
-
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Application Form</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={applicationForm}
-                  onChange={(e) => setApplicationForm(e.target.value)}
-            
-                />
-              </Form.Group>
-            </Col>
             <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Travel Insurance</Form.Label>
@@ -551,7 +541,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
-            {/* <Col>
+            <Col>
               <Form.Group>
               <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Appointment</Form.Label>
                 <Form.Control
@@ -560,7 +550,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   onChange={(e) => setAppointment(e.target.value)}
                 />
               </Form.Group>
-            </Col> */}
+            </Col>
             <Col>
           <Form.Group>
             <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
@@ -722,16 +712,15 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               <div>PAID BY: {paidBy}</div>
               <div>PAID TO: {paidTo}</div>
               <div>VISA TYPE: {visaType}</div>
-              
+              <div>TICKET: {ticket}</div>
             </div>
             <div className="receipt-box">
               <div>RECEIPT NO: {receiptCount}</div>
               <div>CONSULTANCY FEE: {consultancyFee}</div>
-              <div>REGISTRATION FEE: {registrationFee}</div>
               <div>HOTEL BOOKING: {hotelBooking}</div>
-              <div>APPLICATION FORM: {applicationForm}</div>
+              <div>TICKET: {ticket}</div>
               <div>TRAVEL INSURANCE: {travelInsurance}</div>
-             
+              <div>APPOINTMENT: {appointment}</div>
             </div>
           </div>
           <div className="receipt-summary">
@@ -766,5 +755,4 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
     </div>
   );
 };
-
-export default Dashboard;
+export default AdminDashboard2;
