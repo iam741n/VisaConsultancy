@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container,Nav, NavDropdown,Navbar } from 'react-bootstrap';
 import axios from 'axios';
 import { Link ,useLocation} from 'react-router-dom';
-
+import Footer from './Footer';
 
 const DailyExpense = () => {
     const location = useLocation();
@@ -29,6 +29,7 @@ const DailyExpense = () => {
     fetchExpenses();
   }, []);
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -90,6 +91,8 @@ const DailyExpense = () => {
       )}
     </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

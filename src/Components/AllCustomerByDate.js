@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Navbar, Nav, NavDropdown, Button, Modal, Table, Form } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
+import Footer from './Footer';
 
 function AllCustomerByDate() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function AllCustomerByDate() {
   const handleClose = () => setShowModal(false);
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
     <Container>
@@ -130,7 +132,7 @@ function AllCustomerByDate() {
               <p><strong>Phone no:</strong> {selectedCustomer.notes}</p>
               <p><strong>Consultancy Fee:</strong> {selectedCustomer.consultancy_fee}</p>
               <p><strong>Registration Fee:</strong> {selectedCustomer.registration_fee}</p>
-              <p><strong>Application Form:</strong> {selectedCustomer.application_form}</p>
+              <p><strong>University Fee:</strong> {selectedCustomer.application_form}</p>
               <p><strong>Hotel Booking:</strong> {selectedCustomer.hotel_booking}</p>
               <p><strong>Travel Insurance:</strong> {selectedCustomer.travel_insurance}</p>
               <p><strong>Appointment:</strong> {selectedCustomer.appointment}</p>
@@ -153,6 +155,8 @@ function AllCustomerByDate() {
         </Modal.Footer>
       </Modal>
     </div>
+    <Footer/>
+    </>
   );
 }
 

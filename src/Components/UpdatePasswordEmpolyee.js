@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Nav, NavDropdown, Navbar, Form, Alert } fr
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
+import Footer from './Footer';
 
 const UpdatePasswordEmpolyee = () => {
   const location = useLocation();
@@ -57,6 +58,7 @@ const UpdatePasswordEmpolyee = () => {
   };
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -148,6 +150,8 @@ const UpdatePasswordEmpolyee = () => {
         </Row>
       </Container>
     </div>
+    <Footer/>
+    </>
   );
 };
 

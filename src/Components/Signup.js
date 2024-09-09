@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import Footer from "./Footer";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -58,6 +59,7 @@ const Signup = () => {
   };
 
   return (
+    <div>
     <div style={{ backgroundImage: `url(${require('../assets/login.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Container>
         <Row>
@@ -158,7 +160,11 @@ const Signup = () => {
           </Col>
         </Row>
       </Container>
+      
     </div>
+    <Footer/>
+    </div>
+
   );
 };
 

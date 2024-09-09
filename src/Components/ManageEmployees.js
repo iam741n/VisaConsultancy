@@ -5,6 +5,7 @@ import axios from 'axios';
 import '../ManageEmpolyees.css'; // Corrected path to the CSS file
 import maleImage from '../assets/male.png';
 import femaleImage from '../assets/female.png';
+import Footer from './Footer';
 
 const ManageEmployees = () => {
   const location = useLocation();
@@ -51,6 +52,7 @@ const ManageEmployees = () => {
   };
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -148,6 +150,8 @@ const ManageEmployees = () => {
       </Modal>
     </Container>
     </div>
+    <Footer/>
+    </>
   );
 };
 

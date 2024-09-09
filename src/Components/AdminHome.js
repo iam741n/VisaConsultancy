@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Container, Navbar, Nav ,NavDropdown} from 'react-bootstrap';
 import { Link ,useLocation} from 'react-router-dom';
+import Footer from './Footer';
 
 function AdminHome() {
     const location = useLocation();
@@ -24,6 +25,7 @@ function AdminHome() {
       fontSize: '26px',
     };
 return(
+  <>
   <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
        <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -87,6 +89,8 @@ return(
         {/* You can add more content here */}
       </Container>
       </div>
+      <Footer/>
+      </>
 );
 }
 

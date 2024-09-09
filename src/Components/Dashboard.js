@@ -9,6 +9,7 @@ import html2canvas from 'html2canvas';
 import AlarmModal from './AlarmModal'; // Import the AlarmModal component
 import { parseISO, format, isWithinInterval, addMinutes } from 'date-fns'; // Import date-fns functions
 import '../Dashboard.css';
+import Footer from './Footer';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -88,21 +89,21 @@ useEffect(() => {
   if (issuedate && expirydate) {
     const issue = new Date(issuedate);
     const expiry = new Date(expirydate);
-    
+
     const months =
       (expiry.getFullYear() - issue.getFullYear()) * 12 +
       (expiry.getMonth() - issue.getMonth());
 
-    setMonthsremaining(months); // Fixed variable name
+    setMonthsremaining(months); 
   }
 }, [issuedate, expirydate]);
 
-// Conditional styling for the months remaining field
+// Conditional styling for months remaining field
 const getMonthsRemainingStyle = () => {
-  if (monthsremaining <= 9) { // Fixed variable name
-    return { backgroundColor: 'red', color: 'white', fontWeight: 'bold' }; // Not good to go
-  } else if (monthsremaining > 9) { // Fixed variable name
-    return { backgroundColor: 'green', color: 'white', fontWeight: 'bold' }; // Good to go
+  if (monthsremaining <= 9) {
+    return { backgroundColor: '#F88379', borderColor: '#8B0000', color: '#721c24', fontWeight: 'bold' };
+  } else if (monthsremaining > 9) {
+    return { backgroundColor: '#90EE90', borderColor: '#008000', color: '#006400', fontWeight: 'bold' };
   }
   return {}; // Default styling
 };
@@ -308,6 +309,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
   };
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -378,6 +380,12 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
           Customer Form for Empolyee for Study Visa
         </h1>
         <Form>
+            {/* Warning message for passport expiration */}
+      {issuedate && expirydate && monthsremaining <= 9 && (
+        <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px', textAlign: 'center' }}>
+         <h3>Your Passport is Expiring Soon!</h3> 
+        </div>
+        )}
           <Row className="mb-3">
             <Col>
               <Form.Group>
@@ -386,75 +394,6 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                   type="text"
                   value={customer}
                   onChange={(e) => setCustomer(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Due Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Visa Type</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={visaType}
-                  onChange={(e) => setVisaType(e.target.value)}
-                >
-                  <option>Study Visa</option>
-                </Form.Control>
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Term Days</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={termDays}
-                  readOnly
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Expected Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={expectedDate}
-                  onChange={(e) => setExpectedDate(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid by</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={paidBy}
-                  onChange={(e) => setPaidBy(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-           
-           
-          </Row>
-          <Row className="mb-2">
-          <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid to</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={paidTo}
-                  onChange={(e) => setPaidTo(e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -479,100 +418,9 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
                 />
               </Form.Group>
             </Col>
-          </Row>
-
-          <Row className="mb-3">
-          
-        <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Consultancy Fee</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={consultancyFee}
-                  onChange={(e) => setConsultancyFee(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={registrationFee}
-                  onChange={(e) => setRegistrationFee(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Hotel Booking</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={hotelBooking}
-                  onChange={(e) => setHotelBooking(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
            
-          </Row>
-
-          <Row className="mb-3">
-          
-            {/* <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
-                />
-              </Form.Group>
-            </Col> */}
-          
-
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Application Form</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={applicationForm}
-                  onChange={(e) => setApplicationForm(e.target.value)}
             
-                />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Travel Insurance</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={travelInsurance}
-                  onChange={(e) => setTravelInsurance(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-            {/* <Col>
-              <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Appointment</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={appointment}
-                  onChange={(e) => setAppointment(e.target.value)}
-                />
-              </Form.Group>
-            </Col> */}
-            <Col>
-          <Form.Group>
-            <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
-            <Form.Control
-              type="text"
-              value={balance}
-              readOnly
-            />
-          </Form.Group>
-        </Col>
           </Row>
-          
 
           <Row className="mb-3">
             <Col>
@@ -607,21 +455,190 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
             </Col>
             <Col>
             <Form.Group>
-              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Months remaining</Form.Label>
-              <Form.Control
-               type="number"
-               value={monthsremaining}
-               onChange={(e) => setMonthsremaining(e.target.value)}
-               disabled
-                    style={{ 
-                       backgroundColor: monthsremaining <= 9 ? '#F88379' : '', // Red background if 9 or less
-                       borderColor: monthsremaining <= 9 ? '#8B0000' : '', // Red border if 9 or less
-                      color: monthsremaining <= 9 ? '#721c24' : '' // Dark red text if 9 or less
-                            }}
-                             />
-                          </Form.Group>
+            <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>
+              Months Remaining
+            </Form.Label>
+            <Form.Control
+              type="number"
+              value={monthsremaining}
+              onChange={(e) => setMonthsremaining(e.target.value)}
+              disabled
+              style={getMonthsRemainingStyle()}
+            />
+          </Form.Group>
           </Col>
           </Row>
+
+          <Row className="mb-3">
+          <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Due Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Expected Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  value={expectedDate}
+                  onChange={(e) => setExpectedDate(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Term Days</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={termDays}
+                  readOnly
+                />
+              </Form.Group>
+            </Col>
+          
+        
+           
+           
+          </Row>
+         
+
+          <Row className="mb-3">
+          
+        <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Consultancy Fee</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={consultancyFee}
+                  onChange={(e) => setConsultancyFee(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>University Fee</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={applicationForm}
+                  onChange={(e) => setApplicationForm(e.target.value)}
+            
+                />
+              </Form.Group>
+            </Col>
+            
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Hotel Booking</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={hotelBooking}
+                  onChange={(e) => setHotelBooking(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+           
+          </Row>
+
+          <Row className="mb-3">
+          
+            {/* <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Tickets</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={ticket}
+                  onChange={(e) => setTicket(e.target.value)}
+                />
+              </Form.Group>
+            </Col> */}
+          
+
+          <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Registration Fee</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={registrationFee}
+                  onChange={(e) => setRegistrationFee(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Travel Insurance</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={travelInsurance}
+                  onChange={(e) => setTravelInsurance(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            {/* <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Appointment</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={appointment}
+                  onChange={(e) => setAppointment(e.target.value)}
+                />
+              </Form.Group>
+            </Col> */}
+            <Col>
+          <Form.Group>
+            <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Balance</Form.Label>
+            <Form.Control
+              type="text"
+              value={balance}
+              readOnly
+            />
+          </Form.Group>
+        </Col>
+          </Row>
+
+          <Row className="mb-2">
+          <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid by</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={paidBy}
+                  onChange={(e) => setPaidBy(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+          <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Paid to</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={paidTo}
+                  onChange={(e) => setPaidTo(e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col>
+              <Form.Group>
+              <Form.Label style={{ color: 'White', fontFamily: 'Arial, sans-serif', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', fontWeight: 'bold' }}>Visa Type</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={visaType}
+                  onChange={(e) => setVisaType(e.target.value)}
+                >
+                  <option>Study Visa</option>
+                </Form.Control>
+              </Form.Group>
+            </Col>
+         
+          </Row>
+          
+
+          
 
           
 
@@ -729,7 +746,7 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
               <div>CONSULTANCY FEE: {consultancyFee}</div>
               <div>REGISTRATION FEE: {registrationFee}</div>
               <div>HOTEL BOOKING: {hotelBooking}</div>
-              <div>APPLICATION FORM: {applicationForm}</div>
+              <div>UNIVERSITY FEE: {applicationForm}</div>
               <div>TRAVEL INSURANCE: {travelInsurance}</div>
              
             </div>
@@ -764,6 +781,8 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
 
     
     </div>
+     <Footer/>
+     </>
   );
 };
 

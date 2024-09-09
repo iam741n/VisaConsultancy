@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import axios from 'axios';
 import '../UpdateCustomerForm.css';
+import Footer from './Footer';
 
 const UpdateCustomerFormEmployee = () => {
   const location = useLocation();
@@ -256,6 +257,7 @@ useEffect(() => {
   
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -717,6 +719,8 @@ useEffect(() => {
 
       </Container>
     </div>
+    <Footer/>
+    </>
   );
 };
 

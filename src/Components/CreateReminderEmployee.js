@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Navbar, Nav, NavDropdown, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios'; // Import Axios for making HTTP requests
+import Footer from './Footer';
 
 const CreateReminderEmployee = () => {
   const [title, setTitle] = useState('');
@@ -38,6 +39,7 @@ const CreateReminderEmployee = () => {
   };
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -140,6 +142,8 @@ const CreateReminderEmployee = () => {
         )}
       </Container>
     </div>
+    <Footer/>
+    </>
   );
 };
 

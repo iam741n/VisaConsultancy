@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Nav, Modal,Card, NavDropdown, Navbar, Form, Alert } from 'react-bootstrap';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
+import Footer from './Footer';
 
 const ViewReminder = () => {
     const location = useLocation();
@@ -40,7 +41,7 @@ const ViewReminder = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost/Visa/api/Reminder/DeleteReminder/${selectedReminder.Id}`);
+      await axios.delete(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Reminder/DeleteReminder/${selectedReminder.Id}`);
       fetchReminders(); // Refresh reminders after delete
       setShowDeleteModal(false);
       setShowDeleteSuccess(true); // Show success alert
@@ -66,6 +67,7 @@ const ViewReminder = () => {
   };
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -207,6 +209,8 @@ const ViewReminder = () => {
       </Modal>
     </Container>
     </div>
+    <Footer/>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Nav, Modal, Card, NavDropdown, Navbar, Form, Alert } from 'react-bootstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import Footer from './Footer';
 
 const DailyProgressChart = () => {
     const location = useLocation();
@@ -38,6 +39,7 @@ const DailyProgressChart = () => {
     };
 
     return (
+        <> 
         <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Navbar bg="dark" variant="dark" expand="lg">
                 <Container>
@@ -130,6 +132,8 @@ const DailyProgressChart = () => {
                 </Container>
             </div>
         </div>
+        <Footer/>
+        </>
     );
 };
 

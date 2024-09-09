@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import axios from 'axios';
 import { useLocation, Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Nav, Modal, Card, NavDropdown, Navbar, Form, Alert } from 'react-bootstrap';
+import Footer from './Footer';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -117,6 +118,7 @@ const ProfitLossChart = () => {
   };
 
   return (
+    <>
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
@@ -216,6 +218,8 @@ const ProfitLossChart = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 
