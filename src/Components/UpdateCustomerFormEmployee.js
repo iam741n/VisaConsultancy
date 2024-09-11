@@ -46,7 +46,7 @@ const UpdateCustomerFormEmployee = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
         try {
-            const response = await axios.get('http://localhost/Visa/api/Customer/GetAllCustomers');
+            const response = await axios.get('https:/apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/GetAllCustomers');
             setCustomerData(response.data);
         } catch (error) {
             console.error('Error fetching customer data:', error);
