@@ -298,15 +298,27 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
   };
 
   const handleGenerateReceipt = () => {
-    const input = document.getElementById('receipt'); // Assuming 'receipt' is the ID of your receipt container
-    html2canvas(input)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-        pdf.addImage(imgData, 'PNG', 0, 0);
-        pdf.save('receipt.pdf');
+    const input = document.getElementById('receipt'); // Make sure 'receipt' is the correct ID for your receipt container
+  
+    html2canvas(input, {
+      scale: 2, // Higher scale for better resolution
+      useCORS: true, // Cross-origin images allowed
+      scrollX: 0,
+      scrollY: -window.scrollY, // To capture any part of the receipt outside the viewport
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait', // Adjust for portrait orientation
+        unit: 'pt', // Unit in points
+        format: [canvas.width, canvas.height], // Use the actual canvas size to avoid extra white space
       });
+  
+      // Add image to PDF without any extra padding or margin
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save('receipt.pdf'); // Save the file as 'receipt.pdf'
+    });
   };
+  
 
   return (
     <>
@@ -733,37 +745,42 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
       </Modal>
       <div id="receipt" className="receipt-container">
           <div className="receipt-header">RECEIPT OF PAYMENT</div>
+          {issuedate && expirydate && monthsremaining <= 9 && (
+    <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px', textAlign: 'center' }}>
+      <h3>Your Passport is Expiring Soon!</h3>
+    </div>
+  )}
           <div className="receipt-section">
             <div className="receipt-box">
-              <div>CLIENT NAME: {customer}</div>
-              <div>PAID BY: {paidBy}</div>
-              <div>PAID TO: {paidTo}</div>
-              <div>VISA TYPE: {visaType}</div>
+              <div><strong>CLIENT NAME</strong>: {customer}</div>
+              <div><strong>PAID BY</strong>: {paidBy}</div>
+              <div><strong>PAID TO</strong>: {paidTo}</div>
+              <div><strong>VISA TYPE</strong>: {visaType}</div>
               
             </div>
             <div className="receipt-box">
-              <div>RECEIPT NO: {receiptCount}</div>
-              <div>CONSULTANCY FEE: {consultancyFee}</div>
-              <div>REGISTRATION FEE: {registrationFee}</div>
-              <div>HOTEL BOOKING: {hotelBooking}</div>
-              <div>UNIVERSITY FEE: {applicationForm}</div>
-              <div>TRAVEL INSURANCE: {travelInsurance}</div>
+              <div><strong>RECEIPT NO</strong>: {receiptCount}</div>
+              <div><strong>CONSULTANCY FEE</strong>: {consultancyFee}</div>
+              <div><strong>REGISTRATION FEE</strong>: {registrationFee}</div>
+              <div><strong>HOTEL BOOKING</strong>: {hotelBooking}</div>
+              <div><strong>UNIVERSITY FEE</strong>: {applicationForm}</div>
+              <div><strong>TRAVEL INSURANCE</strong>: {travelInsurance}</div>
              
             </div>
           </div>
           <div className="receipt-summary">
-            <div>SUBTOTAL: {balance}</div>
-            <div>Discount: {discount}</div>
-            <div>RECEIVED: {paidAmount}</div>
-            <div>REMAINING: {remainingAmount}</div>
-            <div>Total Amount: {total}</div>
+            <div><strong>SUBTOTAL</strong>: {balance}</div>
+            <div><strong>Discount</strong>: {discount}</div>
+            <div><strong>RECEIVED</strong>: {paidAmount}</div>
+            <div><strong>REMAINING</strong>: {remainingAmount}</div>
+            <div><strong>Total Amount</strong>: {total}</div>
           </div>
         
           <div className="receipt-logo">
-            <img src="logo.png" alt="Jay Visa Logo" />
+          <img src="/j1.png" alt="Jay Visa Logo"   style={{ backgroundColor: 'black', padding: '10px', borderRadius: '8px' }} />
           </div>
           <div className="receipt-note">
-            IN CASE OF VISA REFUSAL OR CASE WITHDRAWAL, PAID CONSULTANCY FEE IS NON-REFUNDABLE.
+          "Fees are non-refundable in case of visa refusal or withdrawal. We are not responsible for lost passports in courier transit."
           </div>
           <div className="receipt-footer">
             DATE: {dueDate}
