@@ -46,7 +46,7 @@ const UpdateCustomerFormEmployee = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
         try {
-            const response = await axios.get('https:/apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/GetAllCustomers');
+            const response = await axios.get('https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/GetAllCustomers');
             setCustomerData(response.data);
         } catch (error) {
             console.error('Error fetching customer data:', error);
@@ -261,19 +261,31 @@ useEffect(() => {
     <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-        <Navbar.Brand href="#home">Jay Visa</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-            <Nav.Link href="/EmpolyeeHome">Home</Nav.Link>
-                <Nav.Link href="/ViewReminderEmpolyee">View Reminders</Nav.Link>
-                <Nav.Link href="/UpdateCustomerFormEmployee">Client Payments</Nav.Link>
-              <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <Link to='/UpdatePasswordEmpolyee' state={{ userData: userData }} className="dropdown-item">Change Credentials</Link>
-                <Link to='/CreateReminderEmployee' className="dropdown-item">Create Reminder</Link>
-                
-              </NavDropdown>
-              <Nav.Link href="/">Logout</Nav.Link>
+        <Navbar.Brand as={Link} to="/AdminHome">Jay Visa</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="me-auto">
+                            <Nav.Link as={Link} to="/AdminHome">Home</Nav.Link>
+                            <NavDropdown title="Client History" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/AllCustomerByDate'>Client Record by Date</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/AllCustomers'>All clients</NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link as={Link} to="/ViewReminder">View Reminders</Nav.Link>
+                            <Nav.Link as={Link} to="/UpdateCustomerForm">Update Customer Form</Nav.Link>
+                            <NavDropdown title="Settings" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/UpdatePasswordAdmin' state={{ userData: userData }}>Change Credentials</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/CreateReminder'>Create Reminders</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/ManageEmpolyees'>Manage Empolyees</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Expense" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
+                            </NavDropdown>
+                            <NavDropdown title="Progress" id="basic-nav-dropdown">
+                                <NavDropdown.Item as={Link} to='/DailyProgressChart'>Today Progress</NavDropdown.Item>
+                                <NavDropdown.Item as={Link} to="/ProfitLossChart">Multiple days Progress</NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link as={Link} to="/">Logout</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -320,15 +332,15 @@ useEffect(() => {
               borderRadius: "5px",
             }}
           />
-          {customerData
-            .filter((customer) =>
-              customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((customer) => (
-              <Dropdown.Item key={customer.id} eventKey={customer.customer_name}>
-                {customer.customer_name}
-              </Dropdown.Item>
-            ))}
+          {Array.isArray(customerData) && customerData
+  .filter((customer) =>
+    customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .map((customer) => (
+    <Dropdown.Item key={customer.id} eventKey={customer.customer_name}>
+      {customer.customer_name}
+    </Dropdown.Item>
+  ))}
 
         </Dropdown.Menu>
       </Dropdown>
