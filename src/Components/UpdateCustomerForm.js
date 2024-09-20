@@ -332,15 +332,16 @@ useEffect(() => {
               borderRadius: "5px",
             }}
           />
-          {customerData
-            .filter((customer) =>
-              customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((customer) => (
-              <Dropdown.Item key={customer.customer_name} eventKey={customer.customer_name}>
-                {customer.customer_name}
-              </Dropdown.Item>
-            ))}
+          {Array.isArray(customerData) && customerData
+  .filter((customer) =>
+    customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .map((customer) => (
+    <Dropdown.Item key={customer.id} eventKey={customer.customer_name}>
+      {customer.customer_name}
+    </Dropdown.Item>
+  ))}
+
         </Dropdown.Menu>
       </Dropdown>
     </ButtonGroup>
