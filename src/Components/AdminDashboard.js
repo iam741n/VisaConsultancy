@@ -87,17 +87,18 @@ useEffect(() => {
 }, [consultancyFee, registrationFee, hotelBooking, applicationForm, travelInsurance, appointment]);
 
 useEffect(() => {
-  if (issuedate && expirydate) {
-    const issue = new Date(issuedate);
+  const currentDate = new Date(); // Use the current date
+
+  if (expirydate) {
     const expiry = new Date(expirydate);
 
     const months =
-      (expiry.getFullYear() - issue.getFullYear()) * 12 +
-      (expiry.getMonth() - issue.getMonth());
+      (expiry.getFullYear() - currentDate.getFullYear()) * 12 +
+      (expiry.getMonth() - currentDate.getMonth());
 
     setMonthsremaining(months); 
   }
-}, [issuedate, expirydate]);
+}, [expirydate]);
 
 // Conditional styling for months remaining field
 const getMonthsRemainingStyle = () => {
@@ -407,11 +408,11 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
         </h1>
         <Form>
             {/* Warning message for passport expiration */}
-      {issuedate && expirydate && monthsremaining <= 9 && (
-        <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px', textAlign: 'center' }}>
-         <h3>Your Passport is Expiring Soon!</h3> 
-        </div>
-        )}
+            {expirydate && monthsremaining <= 9 && (
+  <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px', textAlign: 'center' }}>
+    <h3>Your Passport is Expiring Soon!</h3> 
+  </div>
+)}
           <Row className="mb-3">
             <Col>
               <Form.Group>
@@ -756,11 +757,11 @@ const toggleDropdown = () => setShowDropdown(!showDropdown);
       </Modal>
       <div id="receipt" className="receipt-container">
           <div className="receipt-header">RECEIPT OF PAYMENT</div>
-          {issuedate && expirydate && monthsremaining <= 9 && (
-    <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px', textAlign: 'center' }}>
-      <h3>Your Passport is Expiring Soon!</h3>
-    </div>
-  )}
+          {expirydate && monthsremaining <= 9 && (
+  <div style={{ color: 'red', fontWeight: 'bold', marginTop: '10px', textAlign: 'center' }}>
+    <h3>Your Passport is Expiring Soon!</h3> 
+  </div>
+)}
           <div className="receipt-section">
             <div className="receipt-box">
             <div><strong>CLIENT NAME</strong>: {customer}</div>
