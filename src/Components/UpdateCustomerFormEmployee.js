@@ -320,15 +320,15 @@ useEffect(() => {
               borderRadius: "5px",
             }}
           />
-          {Array.isArray(customerData) && customerData
-  .filter((customer) =>
-    customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  .map((customer) => (
-    <Dropdown.Item key={customer.id} eventKey={customer.customer_name}>
-      {customer.customer_name}
-    </Dropdown.Item>
-  ))}
+          {customerData
+            .filter((customer) =>
+              customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((customer) => (
+              <Dropdown.Item key={customer.id} eventKey={customer.customer_name}>
+                {customer.customer_name}
+              </Dropdown.Item>
+            ))}
 
         </Dropdown.Menu>
       </Dropdown>
