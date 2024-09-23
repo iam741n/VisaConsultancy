@@ -24,6 +24,9 @@ function AdminHome() {
       fontWeight: 'bold',
       fontSize: '26px',
     };
+
+    const firstName = userData?.firstName || '';
+  const lastName = userData?.lastName || '';
 return(
   <>
   <div style={{ backgroundImage: `url(${require('../assets/dash.jpg')})`, backgroundSize: 'cover', backgroundPosition: 'center', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -67,7 +70,7 @@ return(
 
         <div className="d-flex justify-content-center mt-5" style={buttonContainerMargin}>
           <div style={buttonContainerStyle}>
-            <Link to='/AdminDashboard'>
+          <Link to='/AdminDashboard2' state={{ userData: { firstName, lastName } }}>
               <Button variant="primary" style={buttonStyle}>
                Study Visa
               </Button>
@@ -77,7 +80,7 @@ return(
 
         <div className="d-flex justify-content-center mt-5" style={buttonContainerMargin}>
           <div style={buttonContainerStyle}>
-            <Link to='/AdminDashboard2'>
+          <Link to='/AdminDashboard2' state={{ userData: { firstName, lastName } }}>
               <Button variant="primary" style={buttonStyle}>
                 Visit Visa
               </Button>

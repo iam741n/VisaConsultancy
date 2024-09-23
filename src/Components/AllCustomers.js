@@ -39,7 +39,7 @@ function AllCustomers() {
 
   const handleDelete = () => {
     if (selectedCustomer) {
-      axios.delete(`http://localhost/Visa/api/Customer/DeleteCustomer/${selectedCustomer.id}`)
+      axios.delete(`https://apivisa-d8dmara5gufchfht.eastus-01.azurewebsites.net/api/Customer/DeleteCustomer/${selectedCustomer.id}`)
         .then(response => {
           setCustomers(customers.filter(c => c.id !== selectedCustomer.id));
           setSuccessMessage('Client is successfully deleted');

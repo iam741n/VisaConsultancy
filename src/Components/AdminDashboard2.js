@@ -23,7 +23,10 @@ const AdminDashboard2 = () => {
     const [discount, setDiscount] = useState('0');
     const [paidAmount, setPaidAmount] = useState('0');
     const [paidBy, setPaidBy] = useState('');
-    const [paidTo, setPaidTo] = useState('');
+    const [paidTo, setPaidTo] = useState(() => {
+      return [userData?.firstName, userData?.lastName].filter(Boolean).join(' ');
+    });
+    
     const [visaType, setVisaType] = useState('Visit Visa');
     const [notes, setNotes] = useState('');
     const [consultancyFee, setConsultancyFee] = useState('0');
@@ -50,7 +53,26 @@ const AdminDashboard2 = () => {
     const [expirydate, setExpiryDate] = useState('');  // Use useState instead of useEffect
     const [monthsremaining, setMonthsremaining]= useState('');
   
-    
+    useEffect(() => {
+      console.log('User Data:', userData); // Log the entire userData object
+      if (userData) {
+        console.log('First Name:', userData.firstName); // Log the first name
+        console.log('Last Name:', userData.lastName);   // Log the last name
+      }
+    }, [userData]);
+  
+    // Initialize PaidTo with the combination of firstName and lastName
+ 
+  
+    // Effect to update PaidTo if userData changes
+    useEffect(() => {
+      if (userData?.firstName || userData?.lastName) {
+        setPaidTo(`${userData.firstName || ''} ${userData.lastName || ''}`.trim());
+      }
+    }, [userData]);
+
+
+
     useEffect(() => {
       const fetchReminders = async () => {
           try {
