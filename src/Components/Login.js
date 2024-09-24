@@ -97,9 +97,9 @@ const Login = () => {
                 <button type="submit" className="btn btn-primary w-100">Log in</button>
               </form>
 
-              <p className="mt-3 text-center">
+              {/* <p className="mt-3 text-center">
                 Don't have an account yet? <a href="/Signup">Sign up</a>
-              </p>
+              </p> */}
             </div>
           </div>
           <div className="login-image-container col-md-6 d-none d-md-flex align-items-center justify-content-center">
@@ -107,8 +107,8 @@ const Login = () => {
               <h2>Welcome Back!</h2>
               <p>Unlock exclusive visa opportunities with us.
               Enter your details and become a part of us.</p>
-              <h5>New User?</h5>
-              <a href="/Signup" className="btn btn-outline-light">Sign Up</a>
+              {/* <h5>New User?</h5>
+              <a href="/Signup" className="btn btn-outline-light">Sign Up</a> */}
             </div>
           </div>
         </div>

@@ -272,7 +272,7 @@ const AdminDashboard2 = () => {
           setPassportNo('');
           setIssueDate('');
           setExpiryDate('');
-          setPaidTo('');
+         // setPaidTo('');
       })
       .catch(error => {
           console.error('Error saving form:', error);
@@ -313,7 +313,7 @@ const AdminDashboard2 = () => {
       setIssueDate('');
       setExpiryDate('');
       setShowClearConfirmation(false);
-      setPaidTo('');
+     // setPaidTo('');
     };
   
     const handleCancelClearList = () => {
@@ -368,6 +368,7 @@ const AdminDashboard2 = () => {
                 <NavDropdown.Item as={Link} to='/Expense'>Add Expense</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/ViewExpense'>View Expense</NavDropdown.Item>
               </NavDropdown>
+              <Nav.Link as={Link} to="/Signup">Signup</Nav.Link>
               <NavDropdown title="Progress" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to='/DailyProgressChart'>Today Progress</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/ProfitLossChart">Multiple days Progress</NavDropdown.Item>
